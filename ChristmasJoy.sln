@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2005
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChristmasJoy", "ChristmasJoy\ChristmasJoy.csproj", "{1393F56A-28AF-4351-A5F5-72AD4B273A06}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChristmasJoy.App", "ChristmasJoy.App\ChristmasJoy.App.csproj", "{1393F56A-28AF-4351-A5F5-72AD4B273A06}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChristmasJoy.DataLayer", "ChristmasJoy.DataLayer\ChristmasJoy.DataLayer.csproj", "{204062ED-BD6B-4652-BD23-B11C8723497E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChristmasJoy.DataLayer", "ChristmasJoy.DataLayer\ChristmasJoy.DataLayer.csproj", "{204062ED-BD6B-4652-BD23-B11C8723497E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChristmasJoy.Models", "ChristmasJoy.Models\ChristmasJoy.Models.csproj", "{4C4AF33A-232B-4163-9C14-5F1013DCC933}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChristmasJoy.Models", "ChristmasJoy.Models\ChristmasJoy.Models.csproj", "{4C4AF33A-232B-4163-9C14-5F1013DCC933}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
