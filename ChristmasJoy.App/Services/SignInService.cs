@@ -4,7 +4,13 @@ using System.Text;
 
 namespace ChristmasJoy.App.Services
 {
-  public class SignInService
+  public interface ISignInService
+  {
+    bool CheckLoginInPassword(string password, string hashedPassword);
+    string GetHashedPassword(string password);
+  }
+
+  public class SignInService: ISignInService
   {
     public bool CheckLoginInPassword(string password, string hashedPassword)
     {

@@ -1,7 +1,5 @@
-using ChristmasJoy.DataLayer;
 using ChristmasJoy.DataLayer.Interfaces;
 using ChristmasJoy.App.Helpers;
-using ChristmasJoy.Models;
 using ChristmasJoy.App.Services;
 using ChristmasJoy.App.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -9,22 +7,26 @@ using Newtonsoft.Json;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
+using ChristmasJoy.Models;
 
 namespace ChristmasJoy.App.Controllers
 {
   [Route("api/[controller]")]
   public class AuthorizeController : Controller
   {
-    SignInService _signInService;
+    ISignInService _signInService;
     IUserRepository _userRepository;
-    IdentityResolver _identityResolver;
+    IIdentityResolver _identityResolver;
     JwtIssuerOptions _jwtOptions;
 
-    public AuthorizeController(JwtIssuerOptions jwtOptions)
+    public AuthorizeController(JwtIssuerOptions jwtOptions,
+      ISignInService signInService,
+      IIdentityResolver identityResolver,
+      IUserRepository userRepository)
     {
-      _signInService = new SignInService();
-      _userRepository = new UserRepository();
-      _identityResolver = new IdentityResolver();
+      _signInService = signInService;
+      _userRepository = userRepository;
+      _identityResolver = identityResolver;
       _jwtOptions = jwtOptions;
     }
     
@@ -37,7 +39,7 @@ namespace ChristmasJoy.App.Controllers
           return BadRequest(ModelState);
         }
 
-        var user = _userRepository.FindByEmail(model.Email);
+        var user = await _userRepository.GetUser(model.Email);
         if (user == null)
         {
           return BadRequest(Errors.AddErrorToModelState("login_failure", "Invalid email or password.", ModelState));

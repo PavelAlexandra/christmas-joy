@@ -1,6 +1,10 @@
 using AutoMapper;
 using ChristmasJoy.App.Helpers;
+using ChristmasJoy.App.Services;
+using ChristmasJoy.DataLayer;
+using ChristmasJoy.DataLayer.Interfaces;
 using ChristmasJoy.Models;
+using ChristmasJoy.Models.Entities;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -31,6 +35,7 @@ namespace ChristmasJoy.App
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            #region ConfigureAuthentication
             var jwtAppSettingsOptions = Configuration.GetSection("JwtIssuerOptions");
 
             var SecretKey = jwtAppSettingsOptions["SecretKey"];
@@ -51,13 +56,7 @@ namespace ChristmasJoy.App
                 ValidateLifetime = false,
                 ClockSkew = TimeSpan.Zero
             };
-            services.AddSingleton(new JwtIssuerOptions()
-            {
-              Issuer = jwtAppSettingsOptions[nameof(JwtIssuerOptions.Issuer)],
-              Audience = jwtAppSettingsOptions[nameof(JwtIssuerOptions.Audience)],
-              SigningCredentials = new SigningCredentials(_signingKey, SecurityAlgorithms.HmacSha256)
-            });
-
+      
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -74,6 +73,25 @@ namespace ChristmasJoy.App
                 options.AddPolicy(Constants.GenericApiPolicy, policy => policy.RequireRole(Constants.GenericRole));
                 options.AddPolicy(Constants.AdminApiPolicy, policy => policy.RequireRole(Constants.AdminRole));
             });
+            #endregion
+
+            #region ConfigureDI
+            services.AddSingleton(new JwtIssuerOptions()
+            {
+              Issuer = jwtAppSettingsOptions[nameof(JwtIssuerOptions.Issuer)],
+              Audience = jwtAppSettingsOptions[nameof(JwtIssuerOptions.Audience)],
+              SigningCredentials = new SigningCredentials(_signingKey, SecurityAlgorithms.HmacSha256)
+            });
+
+            var appConfig = new AppConfiguration(Configuration);
+            services.AddSingleton<IAppConfiguration>(appConfig);            
+            services.AddScoped<IAzureTableStorage<User>>(factory => { return new AzureTableStorage<User>(appConfig, "User"); });
+
+            services.AddScoped<IUserRepository, UserRepository>();
+
+            services.AddScoped<ISignInService, SignInService>();
+            services.AddScoped<IIdentityResolver, IdentityResolver>();
+            #endregion
 
             services.AddMvc().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
             services.AddAutoMapper();

@@ -1,21 +1,25 @@
-using ChristmasJoy.DataLayer;
 using ChristmasJoy.DataLayer.Interfaces;
 using ChristmasJoy.App.Helpers;
-using ChristmasJoy.Models;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using ChristmasJoy.Models.Entities;
 
 namespace ChristmasJoy.App.Services
 {
-  public class IdentityResolver
+  public interface IIdentityResolver
+  {
+    List<Claim> GetIdentityCaims(User user);
+  }
+
+  public class IdentityResolver: IIdentityResolver
   {
     IUserRepository _userRepository;
 
-    public IdentityResolver()
+    public IdentityResolver(IUserRepository userRepository)
     {
-      _userRepository = new UserRepository();
+      _userRepository = userRepository;
     }
 
     public List<Claim> GetIdentityCaims(User user)
