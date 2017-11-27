@@ -1,10 +1,8 @@
 using AutoMapper;
 using ChristmasJoy.App.Helpers;
 using ChristmasJoy.App.Services;
-using ChristmasJoy.DataLayer;
-using ChristmasJoy.DataLayer.Interfaces;
-using ChristmasJoy.Models;
-using ChristmasJoy.Models.Entities;
+using ChristmasJoy.App.Models;
+using ChristmasJoy.App.DbRepositories;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -18,6 +16,8 @@ using System;
 using System.IO;
 using System.Net;
 using System.Text;
+using Microsoft.AspNetCore.Mvc.Cors.Internal;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ChristmasJoy.App
 {
@@ -84,18 +84,30 @@ namespace ChristmasJoy.App
             });
 
             var appConfig = new AppConfiguration(Configuration);
-            services.AddSingleton<IAppConfiguration>(appConfig);            
-            services.AddScoped<IAzureTableStorage<User>>(factory => { return new AzureTableStorage<User>(appConfig, "User"); });
-
+            services.AddSingleton<IAppConfiguration>(appConfig);
             services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddScoped<ISignInService, SignInService>();
             services.AddScoped<IIdentityResolver, IdentityResolver>();
+            services.AddScoped<IDocumentHelper, DocumentHelper>();
+      #endregion
+
+            #region EnableCord
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            {
+              builder.AllowAnyOrigin()
+                     .AllowAnyMethod()
+                     .AllowAnyHeader();
+            }));
             #endregion
 
             services.AddMvc().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
             services.AddAutoMapper();
-        }
+            services.Configure<MvcOptions>(options =>
+            {
+              options.Filters.Add(new CorsAuthorizationFilterFactory("MyPolicy"));
+            });
+      }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -138,6 +150,7 @@ namespace ChristmasJoy.App
             //Configure the app to server the index.html file from /wwwroot when accessing the server from a web browser
             app.UseDefaultFiles();
             app.UseStaticFiles();
+            app.UseCors("MyPolicy");
 
             //Configure the app for usage as API with default route at '/api/[Controller]'
             app.UseMvcWithDefaultRoute();

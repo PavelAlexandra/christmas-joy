@@ -1,10 +1,10 @@
-using ChristmasJoy.DataLayer.Interfaces;
 using ChristmasJoy.App.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using ChristmasJoy.Models.Entities;
+using ChristmasJoy.App.Models;
+using ChristmasJoy.App.DbRepositories;
 
 namespace ChristmasJoy.App.Services
 {

@@ -1,4 +1,3 @@
-using ChristmasJoy.DataLayer.Interfaces;
 using ChristmasJoy.App.Helpers;
 using ChristmasJoy.App.Services;
 using ChristmasJoy.App.ViewModels;
@@ -7,11 +6,14 @@ using Newtonsoft.Json;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
-using ChristmasJoy.Models;
+using ChristmasJoy.App.Models;
+using ChristmasJoy.App.DbRepositories;
+using Microsoft.AspNetCore.Cors;
 
 namespace ChristmasJoy.App.Controllers
 {
   [Route("api/[controller]")]
+  [EnableCors("MyPolicy")]
   public class AuthorizeController : Controller
   {
     ISignInService _signInService;
@@ -38,8 +40,10 @@ namespace ChristmasJoy.App.Controllers
         {
           return BadRequest(ModelState);
         }
+        var hashedPass = _signInService.GetHashedPassword(model.Password);
 
-        var user = await _userRepository.GetUser(model.Email);
+        var user =  _userRepository.GetUser(model.Email);
+        
         if (user == null)
         {
           return BadRequest(Errors.AddErrorToModelState("login_failure", "Invalid email or password.", ModelState));
@@ -57,7 +61,7 @@ namespace ChristmasJoy.App.Controllers
             issuer: _jwtOptions.Issuer,
             audience: _jwtOptions.Audience,
             claims: claims,
-            notBefore: DateTime.UtcNow,
+            notBefore: _jwtOptions.NotBefore,
             expires: _jwtOptions.Expiration,
             signingCredentials: _jwtOptions.SigningCredentials);
 

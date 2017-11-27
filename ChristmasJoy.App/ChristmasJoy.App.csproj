@@ -24,13 +24,10 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Azure.DocumentDB" Version="1.19.1" />
+    <PackageReference Include="Microsoft.Azure.DocumentDB.Core" Version="1.7.1" />
     <PackageReference Include="Microsoft.DotNet.Watcher.Tools" Version="2.0.0" />
-    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="5.1.4" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.1.4" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\ChristmasJoy.DataLayer\ChristmasJoy.DataLayer.csproj" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="5.1.5" />
   </ItemGroup>
 
   <ItemGroup>

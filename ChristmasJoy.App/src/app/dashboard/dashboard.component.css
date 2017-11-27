@@ -1,0 +1,17 @@
+.navbar-inverse .navbar-nav>.active>a
+{
+    color: #fff;
+    background-color: #c34136;
+}
+
+.navbar-inverse {
+    background-color: #c40e1a;
+    border-color: #9a0a13;
+}
+
+.container-fluid {
+    padding-right: 80px;
+    padding-left: 80px;
+    margin-right: auto;
+    margin-left: auto;
+}
