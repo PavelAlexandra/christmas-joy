@@ -15,11 +15,15 @@ namespace ChristmasJoy.App.DbRepositories
 
     Models.User GetUser(string email);
 
-    Task AddUser(Models.User item);
+    Models.User GetUser(int customId);
 
-    Task Update(Models.User item);
+    Task AddUserAsync(Models.User item);
 
-    Task Delete(Models.User user);
+    Task UpdateUserAsync(Models.User item);
+
+    Task DeleteUserAsync(Models.User user);
+
+    int LastCustomId();
   }
 
   public class UserRepository : IUserRepository
@@ -34,30 +38,18 @@ namespace ChristmasJoy.App.DbRepositories
      
     }
 
-    public async Task AddUser(Models.User user)
+    public async Task AddUserAsync(Models.User user)
     {
-      try
-      {
-        var docUri = UriFactory.CreateDocumentUri(Constants.DocumentDatabase, Constants.DocumentUsersCollection, user.Id);
-        await this.client.ReadDocumentAsync(docUri);
-      }
-      catch (DocumentClientException de)
-      {
-        if (de.StatusCode == HttpStatusCode.NotFound)
-        {
-          var docUri = UriFactory.CreateDocumentCollectionUri(Constants.DocumentDatabase, Constants.DocumentUsersCollection);
-          await this.client.CreateDocumentAsync(docUri, user);
-        }
-        else
-        {
-          throw;
-        }
-      }
+        var docUri = UriFactory.CreateDocumentCollectionUri(Constants.DocumentDatabase, Constants.DocumentUsersCollection);
+        await this.client.CreateDocumentAsync(docUri, user);
     }
 
-    public async Task Delete(Models.User user)
+    public async Task DeleteUserAsync(Models.User user)
     {
-        await this.client.DeleteDatabaseAsync(UriFactory.CreateDocumentUri(Constants.DocumentDatabase, Constants.DocumentUsersCollection, user.Id)); 
+        await this.client.DeleteDatabaseAsync(UriFactory.CreateDocumentUri(
+          Constants.DocumentDatabase,
+          Constants.DocumentUsersCollection,
+          user.id)); 
     }
 
     public Models.User GetUser(string email)
@@ -67,6 +59,17 @@ namespace ChristmasJoy.App.DbRepositories
       IQueryable<Models.User> userQuery  = this.client.CreateDocumentQuery<Models.User>(
                 UriFactory.CreateDocumentCollectionUri(Constants.DocumentDatabase, Constants.DocumentUsersCollection), queryOptions)
                 .Where(u => u.Email.Equals(email));
+
+      return userQuery.ToList().FirstOrDefault();
+    }
+
+    public Models.User GetUser(int customId)
+    {
+      FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
+
+      IQueryable<Models.User> userQuery = this.client.CreateDocumentQuery<Models.User>(
+                UriFactory.CreateDocumentCollectionUri(Constants.DocumentDatabase, Constants.DocumentUsersCollection), queryOptions)
+                .Where(u => u.CustomId == customId);
 
       return userQuery.ToList().FirstOrDefault();
     }
@@ -83,10 +86,23 @@ namespace ChristmasJoy.App.DbRepositories
       return users;
     }
 
-    public async Task Update(Models.User item)
+    public async Task UpdateUserAsync(Models.User item)
     {
       await this.client.ReplaceDocumentAsync(
-        UriFactory.CreateDocumentUri(Constants.DocumentDatabase, Constants.DocumentUsersCollection, item.Id), item);
+        UriFactory.CreateDocumentUri(Constants.DocumentDatabase, Constants.DocumentUsersCollection, item.id), item);
+    }
+
+    public int LastCustomId()
+    {
+      FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
+
+      var maxCustomId = this.client.CreateDocumentQuery<Models.User>(
+                 UriFactory.CreateDocumentCollectionUri(Constants.DocumentDatabase, Constants.DocumentUsersCollection),
+                 queryOptions)
+                 .Select(x=> x.CustomId)
+                 .Max();
+
+      return maxCustomId;
     }
   }
 

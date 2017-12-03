@@ -1,26 +1,47 @@
-<div>
- <div id="header" class="header">
-   <div class="container">
-     <div class="header__left">
-       <ul class="navbar"  *ngIf="isLoggedIn">
-          <li class="active"><a  [routerLink]="['/dashboard']">Home</a></li>
-          <li><a [routerLink]="['/profile']">Profile</a></li>
-          <li><a *ngIf="isAdmin" [routerLink]="['/admin']">Admin</a></li>
-       </ul>
-     </div>
-     <div class="content-right">
-      <div class="header__right navbar">
-          <a class="nav" href="#" (click)="logout()" *ngIf="isLoggedIn">Log out</a>
+<nav class="navbar" role="navigation">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#top-navbar-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="fa fa-bars fa-2x"></span>
+        </button>
+        <a class="navbar-brand" [routerLink]="['/dashboard']">
+          <img src="assets/images/logo.png" style="width:55%">
+        </a>
       </div>
-      <div class="header__right">
-          <div class="header__logo">
-            <img src="/assets/images/logo.png">  
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="top-navbar-1">
+        <ul class="nav navbar-nav navbar-right">
+          <li class="active" *ngIf="isLoggedIn">
+            <a [routerLink]="['/dashboard']"><i class="fa fa-home"></i> Home</a>
+          </li>
+          <li *ngIf="isLoggedIn">
+            <a [routerLink]="['/profile', userId]"><i class="fa fa-user"></i> Profile</a>
+            
+          </li>
+          <li *ngIf="isAdmin && isLoggedIn">
+            <a  [routerLink]="['/admin']">
+              <i class="fa fa-gears"></i> Admin
+            </a>
+          </li>
+          <li *ngIf="isLoggedIn">
+            <a (click)="logout()" >
+              <i class="fa fa-power-off"></i> Log out
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class="slider-container hidden-xs hidden-sm" *ngIf="isLoggedIn">
+      <div class="slider">
+          <div class="flexslider">
+            <img src="assets/images/banner.jpg">
           </div>
       </div>
-     </div>
-   </div>
- </div>
- <div class="container" style="float:left; margin-left: 193px;">
-  <router-outlet></router-outlet>
-</div>
-</div>
+  </div>
+  <div class="services-container">
+      <div class="container">
+          <router-outlet></router-outlet>
+      </div>
+  </div>

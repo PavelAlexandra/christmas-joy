@@ -29,4 +29,27 @@ export class UsersService extends BaseService {
     .map(response => response.json())
     .catch(this.handleError);
   }
+
+  saveUser(user: User): Observable<any>{
+      if(user.customId == 0){
+        return this.http.post(this.baseUrl + "/logins/AddUser/", user, this.requestOptions)
+        .map(response => response.json())
+        .catch(this.handleError);
+      } else{
+        return this.http.post(this.baseUrl + "/logins/UpdateUser/", user, this.requestOptions)
+        .catch(this.handleError);
+      }
+  }
+
+  getAllUserData(id: number): Observable<any>{
+    return this.http.get(this.baseUrl + "/users/getUserData/" + id, this.requestOptions)
+    .map(response => response.json())
+    .catch(this.handleError);
+  }
+
+  setSecretSanta(santaUserId: number): Observable<any>{
+    return this.http.get(this.baseUrl + "/users/getReceiver/" + santaUserId, this.requestOptions)
+    .map(response => response.json())
+    .catch(this.handleError);
+  }
 }

@@ -9,5 +9,7 @@ namespace ChristmasJoy.App.Helpers
 
       public static string DocumentDatabase = "TrendChristmas";
       public static string DocumentUsersCollection = "users";
-    }
+    public static string DocumentSantasCollection = "secretSantas";
+    public static string DocumentWishListCollection = "wishLists";
+  }
 }

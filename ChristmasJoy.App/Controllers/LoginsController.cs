@@ -17,15 +17,18 @@ namespace ChristmasJoy.App.Controllers
     private readonly IAppConfiguration _configuration;
     private readonly IUserRepository _userRepository;
     private readonly ISignInService _signInService;
+    private readonly ISecretSantasRepository _santasRepo;
 
     public LoginsController(IAppConfiguration appConfiguration,
       IUserRepository userRepository,
-      ISignInService signInService
+      ISignInService signInService,
+      ISecretSantasRepository santasRepository
       )
     {
       _configuration = appConfiguration;
       _userRepository = userRepository;
       _signInService = signInService;
+      _santasRepo = santasRepository;
     }
 
     // GET: api/users
@@ -46,28 +49,35 @@ namespace ChristmasJoy.App.Controllers
       }
     }
 
-    [HttpPost]
-    public async Task<IActionResult> AddUser([FromBody]UserViewModel model)
+    [HttpPost("AddUser")]
+    public async Task<IActionResult> AddUser([FromBody]User model)
     {
       try
       {
-        if (ModelState.IsValid)
-        {
-          var existingUser = _userRepository.GetUser(model.Email);
-          if(existingUser != null)
-          {
-            return BadRequest("Email address is already used.");
-          }
-
-          var user = new User() { CustomId = model.CustomId, Email = model.Email, IsAdmin = model.IsAdmin, UserName = model.UserName };
-          user.HashedPassword = _signInService.GetHashedPassword(model.Password);
-          await _userRepository.AddUser(user);
-          return Ok();
-        }
-        else
+        if (!ModelState.IsValid)
         {
           return BadRequest(model);
         }
+
+        var existingUser = _userRepository.GetUser(model.Email);
+        if(existingUser != null)
+        {
+          return BadRequest("Email address is already used.");
+        }
+          
+        model.CustomId = _userRepository.LastCustomId() + 1;
+        model.id = null;
+        model.HashedPassword = _signInService.GetHashedPassword(model.HashedPassword);
+
+        await _userRepository.AddUserAsync(model);
+
+        var newUser = _userRepository.GetUser(model.Email);
+        if(newUser != null)
+        {
+         await _santasRepo.AddUserAsync(newUser.CustomId);
+        }
+
+        return new JsonResult(new { id = newUser.id, customId = newUser.CustomId});
       }
       catch (System.Exception ex)
       {
@@ -78,12 +88,17 @@ namespace ChristmasJoy.App.Controllers
       }
     }
 
-    [HttpPost]
+    [HttpPost("UpdateUser")]
     public async Task<IActionResult> UpdateUser([FromBody]User model)
     {
       try
       {
-        await _userRepository.Update(model);
+        if (!ModelState.IsValid)
+        {
+          return BadRequest(model);
+        }
+
+        await _userRepository.UpdateUserAsync(model);
         return Ok();
       }
       catch (System.Exception ex)
@@ -91,16 +106,21 @@ namespace ChristmasJoy.App.Controllers
         var result = Newtonsoft.Json.JsonConvert.SerializeObject(new { error = ex.Message });
         Response.ContentType = "application/json";
         Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
-        return new JsonResult(result);
+        return new JsonResult(new { error = ex.Message });
       }
     }
 
-    [HttpPost]
+    [HttpPost("DeleteUser")]
     public async Task<IActionResult> DeleteUser([FromBody]User model)
     {
       try
       {
-        await _userRepository.Delete(model);
+        if (!ModelState.IsValid)
+        {
+          return BadRequest(model);
+        }
+
+        await _userRepository.DeleteUserAsync(model);
         return Ok();
       }
       catch (System.Exception ex)

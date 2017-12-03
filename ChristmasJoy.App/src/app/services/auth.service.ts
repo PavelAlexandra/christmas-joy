@@ -28,9 +28,9 @@ export class AuthService extends BaseService {
     this.currentUser = new LoggedInUser();
 
     if (this.loggedIn) {
-      this.currentUser.Email = localStorage.getItem('email');
       this.currentUser.IsAdmin = localStorage.getItem('isAdmin') ? true: false;
       this.currentUser.UserName = localStorage.getItem('userName');
+      this.currentUser.Id = +localStorage.getItem('userId');
     }
     this._authNavStatusSource.next(this.loggedIn);
     this._authCurrentUserSource.next(this.currentUser);
@@ -49,13 +49,14 @@ export class AuthService extends BaseService {
           localStorage.setItem('auth_token', res.access_token);
           this.loggedIn = true;
           this._authNavStatusSource.next(this.loggedIn);
-          localStorage.setItem('email', email);          
           localStorage.setItem('isAdmin', res.admin);
           localStorage.setItem('userName', res.userName);
+          localStorage.setItem('userId', res.id);
 
           this.currentUser.Email = email;
           this.currentUser.IsAdmin = res.admin;
           this.currentUser.UserName = res.userName;
+          this.currentUser.Id = res.id;
           
           this._authCurrentUserSource.next(this.currentUser);
 
@@ -66,7 +67,7 @@ export class AuthService extends BaseService {
 
   logout() {
     localStorage.removeItem('auth_token');
-    localStorage.removeItem('email');
+    localStorage.removeItem('userId');
     localStorage.removeItem('isAdmin');
     localStorage.removeItem('userName');
 

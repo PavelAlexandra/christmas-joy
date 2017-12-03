@@ -7,4 +7,5 @@ export class User {
     hashedPassword?: string
     age: number;
     secretSantaForId? : number;
+    secretSantaFor: string;
 }

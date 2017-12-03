@@ -1,0 +1,39 @@
+.page-title{
+    width: 180px;
+}
+
+.panel-default>.panel-heading {
+    color: #dae3f4;
+    background-color: #043f44;
+    border-color: #325679;
+    font-family: straitregular;
+    font-weight: bold;
+}
+
+.wishlist-item{
+    color: #871a2d;
+}
+
+.cmd-link{
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.fa-green{
+    color: #2c954a;
+}
+.fa-red{
+    color: #e11d29;
+}
+.centerd-link{
+    margin: 0 auto;
+    width: 20%;
+}
+.btn-santa{
+    background-color:#2c954a;
+    color: #fff;
+}
+.heading-santa{
+    background-color: #2c954a;
+    color: #fff;
+}

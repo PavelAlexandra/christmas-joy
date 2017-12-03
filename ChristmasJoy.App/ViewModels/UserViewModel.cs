@@ -1,13 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace ChristmasJoy.App.ViewModels
 {
   public class UserViewModel
   {
-    public string CustomId { get; set; }
+    public int CustomId { get; set; }
+
+    public string Id { get; set; }
 
     public string Email { get; set; }
 
@@ -15,6 +12,10 @@ namespace ChristmasJoy.App.ViewModels
 
     public bool IsAdmin { get; set; }
 
-    public string Password { get; set; }
+    public string HashedPassword { get; set; }
+
+    public int? SecretSantaForId { get; set; }
+
+    public int Age { get; set; }
   }
 }

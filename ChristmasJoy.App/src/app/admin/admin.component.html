@@ -1,34 +1,84 @@
 <div class="container">
-  <h3>Manage Users</h3>
-  <div class="col-lg-12 col-md-12" *ngIf="errorMessage">
-      <div class="alert alert-danger">
-          <strong>Error!</strong> {{errorMessage}}
-      </div>
+  <div class="row">
+    <div class="col-md-3">
+      <h3>Manage Users</h3>
+    </div>
   </div>
-
-  <div class="col-lg-8 col-md-8 col-sm-12" *ngIf="users">
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>UserName</th>
-          <th>Email</th>
-          <th>Password</th>
-          <th>Is Secret Santa</th>
-        </tr>
-      </thead>
-      <tbody class="table">
-        <tr *ngFor="let user of users">
-          <td>{{user.customId}}</td>
-          <td>{{user.userName}}</td>
-          <td>{{user.email}}</td>
-          <td>******</td>
-          <td>
-            <i class="fa fa-check green" *ngIf="user.SecretSantaForId"></i>
-            <i class="fa fa-close red" *ngIf="!user.SecretSantaForId"></i>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="row">
+    <div class="col-lg-12 col-md-12" *ngIf="errorMessage">
+        <div class="alert alert-danger">
+            <strong>Error!</strong> {{errorMessage}}
+        </div>
+    </div>
+    <div class="col-lg-12 col-md-12" *ngIf="alertMessage">
+        <div class="alert alert-info">
+            <strong>Info</strong> {{alertMessage}}
+        </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3 col-sm-12 pull-right">
+      <button class="btn btn-primary" (click)="addNewUser()" [ngClass]="{disabled : editUserId != null}">
+        Add
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-10 col-md-10 col-sm-12" *ngIf="users">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>UserName</th>
+            <th>Email</th>
+            <th>Password</th>
+            <th>Is Secret Santa</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody class="table">
+          <tr *ngFor="let user of users; let i = index">
+            <td>
+              <span *ngIf="user.customId != editUserId">
+                {{user.customId}}
+              </span>
+            </td>
+            <td>
+              <span *ngIf="user.customId != editUserId">
+                  {{user.userName}}
+              </span>
+              <input *ngIf="user.customId == editUserId" type="text" [(ngModel)]="user.userName" />
+            </td>
+            <td>
+                <span *ngIf="user.customId != editUserId">
+                    {{user.email}}
+                </span>
+                <input *ngIf="user.customId == editUserId" type="text" [(ngModel)]="user.email" />
+            </td>
+            <td>
+                <span *ngIf="user.customId != 0">
+                    ******
+                </span>
+                <input *ngIf="user.customId == 0" type="text" [(ngModel)]="user.hashedPassword" />
+            </td>
+            <td>
+              <i class="fa fa-check green" *ngIf="user.SecretSantaForId"></i>
+              <i class="fa fa-close red" *ngIf="!user.SecretSantaForId"></i>
+            </td>
+            <td>
+              <div *ngIf="user.customId == editUserId" style="display:flex;" class="pull-right">
+                <button type="input" class="btn btn-success cmd-btn" (click)="saveUser(user)">Save</button>
+                <button type="input" class="btn btn-danger cmd-btn" (click)="cancelEdit()">Cancel</button>
+              </div>
+              <div *ngIf="user.customId != editUserId" class="pull-right">
+                  <button type="input" class="btn btn-primary cmd-btn" (click)="editUser(i)" [ngClass]="{disabled : editUserId != null}">
+                    Edit
+                  </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>

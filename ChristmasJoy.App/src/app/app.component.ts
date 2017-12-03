@@ -10,6 +10,7 @@ import { Subscription } from 'rxjs';
 })
 export class AppComponent implements OnInit, OnDestroy {
   isLoggedIn: boolean = false;
+  userId: number;
   subscription: Subscription;
   userSubscription: Subscription;
 
@@ -21,7 +22,10 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.subscription = this.authService.authNavStatus$.subscribe(status => this.isLoggedIn = status);
     this.userSubscription = this.authService.authCurrentUser$
-                                            .subscribe(user=> this.isAdmin = user.IsAdmin);
+                                            .subscribe(user=> {
+                                              this.isAdmin = user.IsAdmin;
+                                              this.userId = user.Id;
+                                            });
     
   }
 
@@ -33,5 +37,9 @@ export class AppComponent implements OnInit, OnDestroy {
   logout(){
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  goToProfile(){
+    this.router.navigate(['/profile', this.userId]);
   }
 }

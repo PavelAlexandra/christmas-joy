@@ -52,7 +52,7 @@ namespace ChristmasJoy.App.Controllers
         var passwordCheck = _signInService.CheckLoginInPassword(model.Password, user.HashedPassword);
         if (!passwordCheck)
         {
-          return Unauthorized();
+          return BadRequest(Errors.AddErrorToModelState("login_failure", "Invalid email or password.", ModelState));
         }
 
         var claims = _identityResolver.GetIdentityCaims(user);
@@ -72,7 +72,8 @@ namespace ChristmasJoy.App.Controllers
           access_token = encodedJwt,
           expires_in = (int)_jwtOptions.ValidFor.TotalSeconds,
           admin = user.IsAdmin,
-          username = user.UserName
+          username = user.UserName,
+          id = user.CustomId
         };
 
         var json = JsonConvert.SerializeObject(response);

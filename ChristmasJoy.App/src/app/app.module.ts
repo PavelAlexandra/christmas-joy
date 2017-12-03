@@ -16,6 +16,8 @@ import { ProfileComponent } from './profile/profile.component';
 import { AuthService } from './services/auth.service';
 import { ConfigService } from './services/config.service';
 import { UsersService } from './services/users.service';
+import { WishlistService } from './services/wishlist.service';
+import { WishListItem } from './models/WishListItem';
 
 @NgModule({
   declarations: [
@@ -36,6 +38,7 @@ import { UsersService } from './services/users.service';
     ConfigService, 
     AuthService,
     UsersService,
+    WishlistService,
     { 
       provide: XHRBackend, 
       useClass: AuthenticateXHRBackend

@@ -86,7 +86,9 @@ namespace ChristmasJoy.App
             var appConfig = new AppConfiguration(Configuration);
             services.AddSingleton<IAppConfiguration>(appConfig);
             services.AddScoped<IUserRepository, UserRepository>();
-
+            services.AddScoped<IWishListRepository, WishListRepository>();
+            services.AddScoped<ISecretSantasRepository, SecretSantasRepository>();
+            
             services.AddScoped<ISignInService, SignInService>();
             services.AddScoped<IIdentityResolver, IdentityResolver>();
             services.AddScoped<IDocumentHelper, DocumentHelper>();

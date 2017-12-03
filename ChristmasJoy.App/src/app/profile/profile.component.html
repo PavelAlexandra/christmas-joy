@@ -1,1 +1,105 @@
-<h1>This will be the profile page</h1>
+<div class="row">
+    <div class="col-lg-12 col-md-12" *ngIf="errorMessage">
+        <div class="alert alert-danger">
+            <strong>Error!</strong> {{errorMessage}}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div id="status-img" class="col-lg-2 col-md-2 col-sm-4 col-xs-4">
+        <img src="/assets/images/elf.png" style="height: 150px;">
+    </div>
+    <div id="profile-panel" class="col-lg-10 col-md-10 col-sm-8 col-xs-8" *ngIf="userData">
+        <div class="row">
+            <h3><b>{{userStatus | uppercase}}</b> {{userData.userInfo.userName}}</h3>
+        </div>
+        <div class="row">
+            <h4><b>Age: </b> {{userData.userInfo.age}} years old</h4>
+        </div>
+        <div class="row" *ngIf="!userData.userInfo.secretSantaForId && isSelfProfile()">
+            <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                <button [disabled]="loadingSanta" class="btn btn-santa" (click)="generateSecretReceiver()">
+                    <i class="fa fa-user-secret"></i> Make me a Santa Helper!
+                </button>
+                <img *ngIf="loadingSanta" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+            </div>
+        </div>
+        <div class="row" *ngIf="userData.userInfo.secretSantaForId && isSelfProfile()">
+            <div class="col-lg-6 col-md-5 col-sm-12 col-xs-12">
+                <div class="panel panel-default" [ngClass]="{'panel-open': isSantaPanelOpen}">
+                    <div class="panel-heading heading-santa" (click)="toggleSantaPanelOpen($event)">
+                        <h4 class="panel-title">
+                        <a href tabindex="0"><span>My Secret Info</span></a>
+                        </h4>
+                    </div>
+                    <div class="panel-collapse" [hidden]="!isSantaPanelOpen">
+                        <div class="panel-body">
+                            <div class="col-sm-12">
+                                <div class="col-sm-12">
+                                    <span>You are a Secret Santa for </span>
+                                    <span class="fa-red"><b>{{userData.userInfo.secretSantaFor}}</b></span>
+                                </div>
+                                <div class="col-sm-12">
+                                    <span>Check your buddy's  
+                                        <a class="fa-red" [routerLink]="['/profile', userData.userInfo.secretSantaForId]">
+                                            <i class="fa fa-gift"></i> wishlist
+                                        </a>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12" >
+            <div class="panel panel-default" *ngIf="userData">
+                <div class="panel-heading">
+                    <span><i class="fa fa-gift fa-2x"></i> Wishlist</span>
+                </div>
+                <div class="panel-body">
+                    <div class="row" *ngIf="userData.wishList.length == 0;" style="margin-left:2px;">
+                        No wishlist items added. :(
+                    </div>
+                    <div class="row" *ngFor="let item of userData.wishList; let i = index;">
+                        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <i class="fa fa-circle wishlist-item"></i>
+                        </div>
+                        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+                            <div class="row" *ngIf="!item.isEdited">
+                                {{item.item}}
+                            </div>
+                            <div class="row" *ngIf="item.isEdited">
+                                <input type="text" [maxlength]="25" style="width:100%;" [(ngModel)]="item.item">
+                            </div>
+                        </div>
+                        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <a class="cmd-link" *ngIf="canEdit()" (click)="editwishlist(item, i)">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                            <a class="cmd-link" *ngIf="item.isEdited" (click)="savewishlist(item, i)">
+                                <i class="fa fa-check fa-green"></i>
+                            </a>
+                        </div>
+                        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                            <a class="cmd-link" *ngIf="canEdit()" (click)="deletewishlist(item, i)">
+                                <i class="fa fa-trash fa-red"></i>
+                            </a>
+                            <a class="cmd-link" *ngIf="item.isEdited" (click)="closewishlistedit(item, i)">
+                                    <i class="fa fa-close fa-red"></i>
+                                </a>
+                        </div>
+                    </div> 
+                    <div class="row centerd-link" *ngIf="canAdd()">
+                        <a class="cmd-link" (click)="addToWishlist()">
+                            <i class="fa fa-plus fa-green"> Add</i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
