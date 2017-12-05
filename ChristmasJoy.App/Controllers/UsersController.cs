@@ -12,7 +12,7 @@ using System.Linq;
 namespace ChristmasJoy.App.Controllers
 {
   [Route("api/[controller]")]
-  [Authorize(Roles = "Generic")]
+  [Authorize(Roles = "Generic, Admin")]
   [EnableCors("MyPolicy")]
   public class UsersController : Controller
   {

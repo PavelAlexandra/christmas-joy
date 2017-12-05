@@ -1,5 +1,6 @@
 using ChristmasJoy.App.DbRepositories;
 using ChristmasJoy.App.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 namespace ChristmasJoy.App.Controllers
 {
   [Route("api/[controller]")]
+  [Authorize(Roles = "Generic, Admin")]
   [EnableCors("MyPolicy")]
   public class CommentsController : Controller
   {

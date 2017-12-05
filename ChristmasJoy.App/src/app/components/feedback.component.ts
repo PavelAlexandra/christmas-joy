@@ -139,7 +139,7 @@ export class FeedbackComponent implements OnInit, OnDestroy{
      )
    }
 
-   diableLike(comment: Comment){
+   disableLike(comment: Comment){
     if(this.isLikingComment || comment.likes.indexOf(this.currentUserId) != -1)
       return true;
     if(this.currentUserId == comment.fromUserId)

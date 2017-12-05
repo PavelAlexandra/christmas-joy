@@ -8,6 +8,8 @@ import { UserData } from '../models/UserData';
 import { WishListItem } from '../models/WishListItem';
 import { Comment } from '../models/Comment';
 import { WishlistService } from '../services/wishlist.service';
+import { StatusPoints } from '../models/StatusPoints';
+import { UserStatus } from '../models/UserStatus';
 
 @Component({
   selector: 'profile',
@@ -23,6 +25,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
   public isEditingWishlist: boolean =  false;
   public isSantaPanelOpen: boolean = false;
   public loadingSanta: boolean = false;
+  public statusPercentage: number = 0;
+  public nextStatus: string = null;
+  public isSavingWishList: boolean = false;
 
   constructor(private authSrv: AuthService,
     private usersSrv: UsersService,
@@ -67,6 +72,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
       response => {
         if(response){
           this.userData = response;
+          let nextStatus = UserStatus.nextStatusData(this.userData.status.christmasStatus, 
+                                                     this.userData.status.points);
+          if(nextStatus){
+            this.nextStatus = nextStatus.Status;
+            this.statusPercentage = nextStatus.Percentage;
+          }
         }
       },
       error => {this.errorMessage = error;}
@@ -115,16 +126,22 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   deletewishlist(item, i){
+    this.isSavingWishList = true;
     this.wishlistSrv.deleteItem(item)
     .subscribe(
       response => {
         this.userData.wishList.splice(i, 1);
+        this.isSavingWishList = false;
       },
-      error => { this.errorMessage = error; }
+      error => { 
+        this.errorMessage = error; 
+        this.isSavingWishList = false;
+      }
     );
   }
 
   savewishlist(item, i){
+    this.isSavingWishList = true;
     this.wishlistSrv.saveItem(item)
     .subscribe(
       response => {
@@ -133,8 +150,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
         }
         item.isEdited = false;
         this.isEditingWishlist = false;
+        this.isSavingWishList = false;
       },
-      error => {this.errorMessage = error;}
+      error => {
+        this.errorMessage = error;
+        this.isSavingWishList = false;
+      }
     )
   }
 

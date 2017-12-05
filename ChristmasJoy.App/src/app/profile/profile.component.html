@@ -8,12 +8,24 @@
 </div>
 
 <div class="row" *ngIf="userData">
-    <div id="status-img" class="col-lg-2 col-md-2 col-sm-4 col-xs-4">
+    <div id="status-img" class="col-lg-3 col-md-3 col-sm-5 col-xs-5">
         <img class="status-img" src="/assets/images/{{userData.status.christmasStatus}}.jpg">
+        <div class="progress progress_sm" *ngIf="nextStatus && nextStatus != 'magus'">
+            <div class="progress-bar bg-green" role="progressbar"
+                [attr.aria-valuenow]="statusPercentage" aria-valuemin="0" aria-valuemax="100"
+                [style.width]="statusPercentage + '%'">
+            </div>
+        </div>
+        <div *ngIf="nextStatus && nextStatus != 'magus'">
+            <span>{{statusPercentage}}% to <b>{{nextStatus | uppercase}}</b></span>
+        </div>
     </div>
-    <div id="profile-panel" class="col-lg-10 col-md-10 col-sm-8 col-xs-8">
-        <div class="row">
-            <h3><b>{{userData.status.christmasStatus | uppercase}}</b> {{userData.userInfo.userName}}</h3>
+    <div id="profile-panel" class="col-lg-9 col-md-9 col-sm-7 col-xs-7">
+        <div class="row" *ngIf="userData.status.christmasStatus != 'magus'">
+            <h4><b>{{userData.status.christmasStatus | uppercase}}</b> {{userData.userInfo.userName}}</h4>
+        </div>
+        <div class="row" *ngIf="userData.status.christmasStatus == 'magus'">
+            <h4><b>{{userData.status.christmasStatus | uppercase}}</b> {{userData.userInfo.userName}}, you carry the Christmas Spirit in your heart! </h4>
         </div>
         <div class="row">
             <h4><b>Age: </b> {{userData.userInfo.age}} years old</h4>
@@ -39,11 +51,11 @@
                             <div class="col-sm-12">
                                 <div class="col-sm-12">
                                     <span>You are a Secret Santa for </span>
-                                    <span class="fa-red"><b>{{userData.userInfo.secretSantaFor}}</b></span>
+                                    <span><b>{{userData.userInfo.secretSantaFor}}</b></span>
                                 </div>
                                 <div class="col-sm-12">
                                     <span>Check your buddy's  
-                                        <a class="fa-red" [routerLink]="['/profile', userData.userInfo.secretSantaForId]">
+                                        <a [routerLink]="['/profile', userData.userInfo.secretSantaForId]">
                                             <i class="fa fa-gift"></i> wishlist
                                         </a>
                                     </span>
@@ -67,10 +79,10 @@
                         No wishlist items added. :(
                     </div>
                     <div class="row" *ngFor="let item of userData.wishList; let i = index;">
-                        <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                        <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2">
                             <i class="fa fa-circle wishlist-item"></i>
                         </div>
-                        <div class="col-lg-9 col-md-9 col-sm-8 col-xs-8">
+                        <div class="col-lg-9 col-md-9 col-sm-7 col-xs-7">
                             <div class="row" *ngIf="!item.isEdited">
                                 {{item.item}}
                             </div>
@@ -82,12 +94,16 @@
                             <a class="cmd-link" *ngIf="canEdit()" (click)="editwishlist(item, i)">
                                 <i class="fa fa-edit"></i>
                             </a>
-                            <a class="cmd-link" *ngIf="item.isEdited" (click)="savewishlist(item, i)">
+                            <a class="cmd-link" 
+                                *ngIf="item.isEdited" 
+                                (click)="savewishlist(item, i)"
+                                [ngClass]="{'not-active': !item.item || isSavingWishList}">
                                 <i class="fa fa-check fa-green"></i>
                             </a>
                         </div>
                         <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
-                            <a class="cmd-link" *ngIf="canEdit()" (click)="deletewishlist(item, i)">
+                            <a class="cmd-link"*ngIf="canEdit()" (click)="deletewishlist(item, i)"
+                            [ngClass]="{'not-active': isSavingWishList}">
                                 <i class="fa fa-trash fa-red"></i>
                             </a>
                             <a class="cmd-link" *ngIf="item.isEdited" (click)="closewishlistedit(item, i)">
@@ -95,6 +111,9 @@
                                 </a>
                         </div>
                     </div> 
+                    <div class="col-xs-12">
+                            <img *ngIf="isSavingWishList" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+                    </div>
                     <div class="row centerd-link" *ngIf="canAdd()">
                         <a class="cmd-link" (click)="addToWishlist()">
                             <i class="fa fa-plus fa-green"> Add</i>
@@ -108,7 +127,7 @@
             <div class="panel-heading">
                 <span><i class="fa fa-comments fa-2x"></i> Santa's Helpers wrote:</span><br>
             </div>
-            <div class="panel-body" style="padding: 2px !important;">
+            <div class="panel-body long-list-panel" style="padding: 2px !important;">
                 <feedback-panel [userId]="userId"></feedback-panel>
             </div>
         </div>

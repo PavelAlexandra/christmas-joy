@@ -6,9 +6,11 @@
         <button type="button" class="navbar-toggle collapsed" *ngIf="isLoggedIn">
           <a class="cmd-link" (click)="toggleMenu()"><i class="fa fa-bars fa-2x"></i></a>
         </button>
+        <div [ngClass]="{'center-block': !isLoggedIn}">
         <a class="navbar-brand" [routerLink]="['/dashboard']">
           <img class="brand-img" [ngClass]="{'large-brand-img': !isLoggedIn}" src="assets/images/logo.png">
         </a>
+      </div>
       </div>
       <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" [ngClass]="{'in': isMenuOpen}" id="top-navbar-1">

@@ -18,7 +18,10 @@
         <div class="col-xs-12">
             <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
                 <small style="font-style:italic;">You are leaving a {{newComment.commentTypeTxt() }} feedback</small>
-                <textarea rows="2" style="width:100%;" [maxlength]="250" [(ngModel)]="newComment.content" ></textarea>
+                <textarea rows="3" style="width:100%; margin-top:3px; margin-bottom:3px;" 
+                          [maxlength]="250" 
+                          [(ngModel)]="newComment.content">
+                </textarea>
             </div>
             <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
                 <a class="cmd-link pull-right cmd-add" (click)="saveComment()"
@@ -59,7 +62,7 @@
                     </div>
                     <a (click)="likeComment(comment)"
                         class="like" 
-                        [ngClass]="{'not-active': diableLike}">
+                        [ngClass]="{'not-active': disableLike(comment)}">
                         <i class="fa fa-thumbs-up"> {{comment.likes.length}}</i>
                     </a>
                 </div>

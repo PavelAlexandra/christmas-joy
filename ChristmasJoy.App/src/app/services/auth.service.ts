@@ -40,7 +40,7 @@ export class AuthService extends BaseService {
       const decoded = jwt_decode(token);
       if(decoded){
         this.currentUser = new LoggedInUser();
-        this.currentUser.IsAdmin = decoded.role == "Admin";
+        this.currentUser.IsAdmin = decoded.role === "Admin";
         this.currentUser.Email = decoded.sub;
         this.currentUser.Id = +decoded.id;
       }else{

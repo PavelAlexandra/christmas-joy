@@ -6,7 +6,8 @@ namespace ChristmasJoy.App.Models
     Snowman = 1,
     Elf = 2,
     Cookie = 3,
-    Santa = 4
+    Santa = 4,
+    Magus = 5
   }
 
   public class UserStatus

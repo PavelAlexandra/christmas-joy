@@ -4,12 +4,14 @@ using Microsoft.AspNetCore.Mvc;
 using ChristmasJoy.App.DbRepositories;
 using ChristmasJoy.App.Models;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace ChristmasJoy.App.Controllers
 {
   [Route("api/[controller]")]
+  [Authorize(Roles = "Generic, Admin")]
   [EnableCors("MyPolicy")]
   public class WishListController : Controller
   {

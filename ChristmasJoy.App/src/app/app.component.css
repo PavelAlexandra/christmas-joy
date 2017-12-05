@@ -360,3 +360,11 @@ ul.navbar-nav li.active .dropdown-menu > .active > a:focus { background: #fe503e
     height: 50px;
 }
 
+#body{
+    color: #73879C;
+    background: #2A3F54;
+    font-family: "Helvetica Neue",Roboto,Arial,"Droid Sans",sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.471;
+}

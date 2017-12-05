@@ -29,13 +29,16 @@ namespace ChristmasJoy.App.Services
           new Claim(JwtRegisteredClaimNames.Sub, user.Email),
           new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
           new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(DateTime.Now).ToString(), ClaimValueTypes.Integer64),
-          new Claim("role", Constants.GenericRole),
           new Claim("id", user.CustomId.ToString())
         };
 
       if (user.IsAdmin)
       {
         claims.Add(new Claim("role", Constants.AdminRole));
+      }
+      else
+      {
+        claims.Add(new Claim("role", Constants.GenericRole));
       }
       
       return claims;

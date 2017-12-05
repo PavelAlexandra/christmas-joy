@@ -22,29 +22,30 @@
     <div class="col-xs-12">
         <img *ngIf="isLoading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
     </div>
-    <div class="row" *ngIf="naughtyUsers && goodUsers">
+    <div class="row" *ngIf="naughtyUsers && goodUsers" style="margin-top: 10px;">
             <div class="list-panel col-lg-5 col-lg-offset-1 col-md-5 col-md-offset-1 col-sm-6 col-xs-12">
                 <div class="panel panel-default" *ngIf="goodUsers">
                     <div class="panel-heading panel-users">
                         <span>Good List</span><br>
                     </div>
                     <div class="panel-body">
+                        <div class="col-xs-12" *ngIf="!naughtyUsers || naughtyUsers.length !=0">
+                            <span style="font-weight: bold;">Help everyone get on the good list :)</span>
+                        </div>
                         <div class="row item" *ngFor="let user of goodUsers">
                             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
                                 <img class="small-status-img" [src]="getStatusImg(user)" >
                             </div>
-                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 stats">
                                 <a [routerLink]="['/profile', user.id]">
                                     <b>{{user.christmasStatus | uppercase}}</b> {{user.userName}}
                                 </a>
                             </div>
-                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 stats">
                                     <i class="fa fa-comments"></i> {{user.noOfComments}}
                             </div>
                         </div>
-                        <div class="col-xs-12" *ngIf="!naughtyUsers || naughtyUsers.length !=0">
-                            <span style="font-weight: bold;">Help everyone get on the good list :)</span>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -58,12 +59,12 @@
                                 <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
                                     <img class="small-status-img" [src]="getStatusImg(user)" >
                                 </div>
-                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 stats">
                                     <a [routerLink]="['/profile', user.id]">
                                         <b>{{user.christmasStatus | uppercase}}</b> {{user.userName}}
                                     </a>
                                 </div>
-                                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 stats">
                                         <i class="fa fa-comments"></i> {{user.noOfComments}}
                                 </div>
                             </div>

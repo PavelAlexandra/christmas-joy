@@ -1,6 +1,5 @@
 using ChristmasJoy.App.DbRepositories;
 using ChristmasJoy.App.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -18,13 +17,17 @@ namespace ChristmasJoy.App.Services
       {3, Status.Cookie },
       {10, Status.Snowman },
       {25, Status.Elf },
-      {50, Status.Santa }
+      {50, Status.Santa },
+      {67, Status.Magus }
     };
 
-    public const double CommentReceivedPoints = 0.1;
+    public const double CommentReceivedPoints = 0.3;
     public const double CommentPositiveSentPoints = 1;
     public const double CommentNegativeSentPoints = 0.2;
     public const double CommentLikeReceived = 0.3;
+
+    public const int MaxPos = 45;
+    public const int MaxNeg = 10;
 
     private readonly ICommentsRepository _commRepo;
 
@@ -68,8 +71,8 @@ namespace ChristmasJoy.App.Services
                           .SelectMany(x => x.Take(2))
                           .Count();
 
-        sentPosCommentsPoints = sentPosCommNo * CommentPositiveSentPoints;
-        sentNegativeCommentsPoints = sentNegCommNo * CommentNegativeSentPoints;
+        sentPosCommentsPoints = (sentPosCommNo > MaxPos ? MaxPos : sentPosCommNo) * CommentPositiveSentPoints;
+        sentNegativeCommentsPoints = (sentNegCommNo > MaxNeg? MaxNeg : sentNegCommNo ) * CommentNegativeSentPoints;
       }   
 
       var totalPoints = sentPosCommentsPoints +
