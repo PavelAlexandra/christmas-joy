@@ -3,14 +3,16 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ChristmasJoy.App.DbRepositories;
 using ChristmasJoy.App.Models;
+using Microsoft.AspNetCore.Cors;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace ChristmasJoy.App.Controllers
 {
   [Route("api/[controller]")]
-    public class WishListController : Controller
-    {
+  [EnableCors("MyPolicy")]
+  public class WishListController : Controller
+  {
     private readonly IWishListRepository _wishListRepo;
 
     public WishListController(IWishListRepository wishListRepo)
@@ -46,7 +48,7 @@ namespace ChristmasJoy.App.Controllers
         }
         item.Id = null;
         var itemId = await _wishListRepo.AddWishItemAsync(item);
-        return Ok(new { id= itemId });
+        return Ok(new { id = itemId });
       }
       catch (Exception ex)
       {

@@ -1,4 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, 
+         OnInit, 
+         OnDestroy, 
+         ChangeDetectorRef,
+         ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from './services/auth.service';
 import { Subscription } from 'rxjs';
@@ -13,8 +17,8 @@ export class AppComponent implements OnInit, OnDestroy {
   userId: number;
   subscription: Subscription;
   userSubscription: Subscription;
-
   isAdmin: boolean = false;
+  isMenuOpen: boolean = false;
 
   constructor(private authService: AuthService,
     private router: Router) { }
@@ -23,10 +27,19 @@ export class AppComponent implements OnInit, OnDestroy {
     this.subscription = this.authService.authNavStatus$.subscribe(status => this.isLoggedIn = status);
     this.userSubscription = this.authService.authCurrentUser$
                                             .subscribe(user=> {
-                                              this.isAdmin = user.IsAdmin;
-                                              this.userId = user.Id;
+                                              if(user){
+                                                this.isAdmin = user.IsAdmin;
+                                                this.userId = user.Id;
+                                              }
                                             });
     
+  }
+
+  toggleMenu(){
+    this.isMenuOpen = !this.isMenuOpen;
+  }
+  closeMenu(){
+    this.isMenuOpen = false;
   }
 
   ngOnDestroy(){

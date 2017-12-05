@@ -8,6 +8,6 @@ namespace ChristmasJoy.App.Models
 
     public List<WishListItem> WishList { get; set; }
 
-    public List<Comment> ReceivedComments { get; set; }
+    public UserStatus Status { get; set; }
   }
 }

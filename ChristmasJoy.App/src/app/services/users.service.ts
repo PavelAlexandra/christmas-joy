@@ -52,4 +52,16 @@ export class UsersService extends BaseService {
     .map(response => response.json())
     .catch(this.handleError);
   }
+
+  getUsersStatusMap(): Observable<any>{
+    return this.http.get(this.baseUrl + "/users/getMap/", this.requestOptions)
+    .map(response => response.json())
+    .catch(this.handleError);
+  }
+
+  getAllUserStatuses(): Observable<any>{
+    return this.http.get(this.baseUrl + "/users/getStatuses/", this.requestOptions)
+    .map(response => response.json())
+    .catch(this.handleError);
+  }
 }

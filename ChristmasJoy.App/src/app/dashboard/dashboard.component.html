@@ -1,3 +1,77 @@
+<div class="counter">
+    <div class="row count-down">
+        <div class="center-block">
+            <count-down [dateString]='"December 25, 2017 00:00:00"'></count-down> until <span class="fa-red bold">Christmas</span>!!
+        </div>
+    </div>
+    <div class="row count-down">
+        <div class="center-block">
+            <count-down [dateString]='"December 15, 2017 20:00:00"'></count-down> until <span class="fa-red bold">Secret Santa</span>!!
+        </div>
+    </div>
+</div>
+
 <div class="container">
-    <h1>This is dashboard</h1>
+    <div class="row">
+        <div class="col-lg-12 col-md-12" *ngIf="errorMessage">
+            <div class="alert alert-danger">
+                <strong>Error!</strong> {{errorMessage}}
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12">
+        <img *ngIf="isLoading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+    </div>
+    <div class="row" *ngIf="naughtyUsers && goodUsers">
+            <div class="list-panel col-lg-5 col-lg-offset-1 col-md-5 col-md-offset-1 col-sm-6 col-xs-12">
+                <div class="panel panel-default" *ngIf="goodUsers">
+                    <div class="panel-heading panel-users">
+                        <span>Good List</span><br>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row item" *ngFor="let user of goodUsers">
+                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                                <img class="small-status-img" [src]="getStatusImg(user)" >
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                <a [routerLink]="['/profile', user.id]">
+                                    <b>{{user.christmasStatus | uppercase}}</b> {{user.userName}}
+                                </a>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                                    <i class="fa fa-comments"></i> {{user.noOfComments}}
+                            </div>
+                        </div>
+                        <div class="col-xs-12" *ngIf="!naughtyUsers || naughtyUsers.length !=0">
+                            <span style="font-weight: bold;">Help everyone get on the good list :)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="list-panel col-lg-5 col-md-5 col-sm-6 col-xs-12">
+                <div class="panel panel-default" *ngIf="naughtyUsers">
+                    <div class="panel-heading">
+                        <span>Naughty List</span><br>
+                    </div>
+                    <div class="panel-body">
+                            <div class="row item" *ngFor="let user of naughtyUsers">
+                                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                                    <img class="small-status-img" [src]="getStatusImg(user)" >
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                    <a [routerLink]="['/profile', user.id]">
+                                        <b>{{user.christmasStatus | uppercase}}</b> {{user.userName}}
+                                    </a>
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                                        <i class="fa fa-comments"></i> {{user.noOfComments}}
+                                </div>
+                            </div>
+                            <div class="col-xs-12" *ngIf="!naughtyUsers || naughtyUsers.length ==0">
+                                <span style="font-weight: bold;">Congratulations! Everyone is on the good list!</span>
+                            </div>
+                        </div>
+                </div>
+            </div>
+    </div>
 </div>

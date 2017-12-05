@@ -5,6 +5,7 @@ import { BaseService } from './base.service';
 import { LoggedInUser } from '../models/LoggedInUser';
 
 import { BehaviorSubject } from 'rxjs/Rx';
+import * as jwt_decode from 'jwt-decode';
 
 @Injectable()
 export class AuthService extends BaseService {
@@ -21,20 +22,59 @@ export class AuthService extends BaseService {
  
   constructor(private http: Http, private configService: ConfigService) {
     super();
-    let token = localStorage.getItem('auth_token');
-    if(token){
-      this.loggedIn = true;
-    }
-    this.currentUser = new LoggedInUser();
+    
+    let tokenExpired = this.isTokenExpired();
 
-    if (this.loggedIn) {
-      this.currentUser.IsAdmin = localStorage.getItem('isAdmin') ? true: false;
-      this.currentUser.UserName = localStorage.getItem('userName');
-      this.currentUser.Id = +localStorage.getItem('userId');
+    if (!tokenExpired) {
+     this.setCurrentUser(null);
     }
-    this._authNavStatusSource.next(this.loggedIn);
+    this._authNavStatusSource.next(!tokenExpired);
     this._authCurrentUserSource.next(this.currentUser);
     this.baseUrl = configService.getApiURI();
+  }
+
+  setCurrentUser(token: string){
+    if(token === undefined || token == null) token = this.getToken();
+    if(token === "undefined" || token == null) this.currentUser = null;
+    
+      const decoded = jwt_decode(token);
+      if(decoded){
+        this.currentUser = new LoggedInUser();
+        this.currentUser.IsAdmin = decoded.role == "Admin";
+        this.currentUser.Email = decoded.sub;
+        this.currentUser.Id = +decoded.id;
+      }else{
+        this.currentUser = null;
+      }
+  }
+
+  getTokenExpirationDate(token: string): Date {
+    if(token === undefined || token == null) token = this.getToken();
+    if(token === "undefined" || token == null) return null;
+     const decoded = jwt_decode(token);
+
+      if (decoded.exp === undefined) return null;
+
+      const date = new Date(0); 
+      date.setUTCSeconds(decoded.exp);
+      return date;
+  }
+
+  getToken(): string {
+    return localStorage.getItem('auth_token');
+  }
+
+  setToken(token: string): void {
+    localStorage.setItem('auth_token', token);
+  }
+
+  isTokenExpired(token?: string): boolean {
+    if(token === undefined || token == null) token = this.getToken();
+    if(token === "undefined" || token == null) return true;
+
+    const date = this.getTokenExpirationDate(token);
+    if(date === undefined || date == null) return false;
+    return !(date.valueOf() > new Date().valueOf());
   }
 
   login(email, password) {
@@ -46,18 +86,10 @@ export class AuthService extends BaseService {
             options)
       .map(res => res.json())
       .map(res => {
-          localStorage.setItem('auth_token', res.access_token);
-          this.loggedIn = true;
-          this._authNavStatusSource.next(this.loggedIn);
-          localStorage.setItem('isAdmin', res.admin);
-          localStorage.setItem('userName', res.userName);
-          localStorage.setItem('userId', res.id);
+          this.setToken(res.access_token);
+          this.setCurrentUser(res.access_token);
 
-          this.currentUser.Email = email;
-          this.currentUser.IsAdmin = res.admin;
-          this.currentUser.UserName = res.userName;
-          this.currentUser.Id = res.id;
-          
+          this._authNavStatusSource.next(true);
           this._authCurrentUserSource.next(this.currentUser);
 
           return true;
@@ -67,11 +99,6 @@ export class AuthService extends BaseService {
 
   logout() {
     localStorage.removeItem('auth_token');
-    localStorage.removeItem('userId');
-    localStorage.removeItem('isAdmin');
-    localStorage.removeItem('userName');
-
-    this.loggedIn = false;
     this._authNavStatusSource.next(false);
   }
 
@@ -80,6 +107,6 @@ export class AuthService extends BaseService {
   }
 
   isLoggedIn() {
-    return this.loggedIn;
+    return !this.isTokenExpired();
   }  
 }

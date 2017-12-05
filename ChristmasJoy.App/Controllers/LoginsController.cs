@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 using ChristmasJoy.App.Models;
 using ChristmasJoy.App.DbRepositories;
 using System.Threading.Tasks;
-using ChristmasJoy.App.ViewModels;
 using ChristmasJoy.App.Services;
 using Microsoft.AspNetCore.Cors;
+using ChristmasJoy.App.Helpers;
 
 namespace ChristmasJoy.App.Controllers
 {
@@ -62,7 +62,7 @@ namespace ChristmasJoy.App.Controllers
         var existingUser = _userRepository.GetUser(model.Email);
         if(existingUser != null)
         {
-          return BadRequest("Email address is already used.");
+          return BadRequest(Errors.AddErrorToModelState("email", "Email address is already used.", ModelState));
         }
           
         model.CustomId = _userRepository.LastCustomId() + 1;

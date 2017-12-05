@@ -7,6 +7,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AuthGuardService as AuthGuard } from './services/auth.guard';
 
 import { routing } from './app.routing';
+import { MomentModule } from 'angular2-moment';
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
@@ -17,7 +18,9 @@ import { AuthService } from './services/auth.service';
 import { ConfigService } from './services/config.service';
 import { UsersService } from './services/users.service';
 import { WishlistService } from './services/wishlist.service';
-import { WishListItem } from './models/WishListItem';
+import { CommentsService } from './services/comments.service';
+import { FeedbackComponent } from './components/feedback.component';
+import { CountdownComponent } from './components/countdown.component';
 
 @NgModule({
   declarations: [
@@ -25,13 +28,16 @@ import { WishListItem } from './models/WishListItem';
     AdminComponent,
     LoginComponent,
     DashboardComponent,
-    ProfileComponent
+    ProfileComponent,
+    FeedbackComponent,
+    CountdownComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpModule,
-    routing
+    routing,
+    MomentModule
   ],
   providers: [ 
     AuthGuard, 
@@ -39,6 +45,7 @@ import { WishListItem } from './models/WishListItem';
     AuthService,
     UsersService,
     WishlistService,
+    CommentsService,
     { 
       provide: XHRBackend, 
       useClass: AuthenticateXHRBackend

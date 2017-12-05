@@ -1,3 +1,4 @@
+<div class="container">
 <div class="row">
     <div class="col-lg-12 col-md-12" *ngIf="errorMessage">
         <div class="alert alert-danger">
@@ -6,13 +7,13 @@
     </div>
 </div>
 
-<div class="row">
+<div class="row" *ngIf="userData">
     <div id="status-img" class="col-lg-2 col-md-2 col-sm-4 col-xs-4">
-        <img src="/assets/images/elf.png" style="height: 150px;">
+        <img class="status-img" src="/assets/images/{{userData.status.christmasStatus}}.jpg">
     </div>
-    <div id="profile-panel" class="col-lg-10 col-md-10 col-sm-8 col-xs-8" *ngIf="userData">
+    <div id="profile-panel" class="col-lg-10 col-md-10 col-sm-8 col-xs-8">
         <div class="row">
-            <h3><b>{{userStatus | uppercase}}</b> {{userData.userInfo.userName}}</h3>
+            <h3><b>{{userData.status.christmasStatus | uppercase}}</b> {{userData.userInfo.userName}}</h3>
         </div>
         <div class="row">
             <h4><b>Age: </b> {{userData.userInfo.age}} years old</h4>
@@ -29,9 +30,9 @@
             <div class="col-lg-6 col-md-5 col-sm-12 col-xs-12">
                 <div class="panel panel-default" [ngClass]="{'panel-open': isSantaPanelOpen}">
                     <div class="panel-heading heading-santa" (click)="toggleSantaPanelOpen($event)">
-                        <h4 class="panel-title">
-                        <a href tabindex="0"><span>My Secret Info</span></a>
-                        </h4>
+                        <span>My Secret Info</span>
+                        <i *ngIf="isSantaPanelOpen" class="pull-right fa fa-chevron-up"></i>
+                        <i *ngIf="!isSantaPanelOpen" class="pull-right fa fa-chevron-down"></i>
                     </div>
                     <div class="panel-collapse" [hidden]="!isSantaPanelOpen">
                         <div class="panel-body">
@@ -69,7 +70,7 @@
                         <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
                             <i class="fa fa-circle wishlist-item"></i>
                         </div>
-                        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+                        <div class="col-lg-9 col-md-9 col-sm-8 col-xs-8">
                             <div class="row" *ngIf="!item.isEdited">
                                 {{item.item}}
                             </div>
@@ -102,4 +103,15 @@
                 </div>
             </div>
     </div>
+    <div id="comments-panel" class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <div class="panel panel-default" *ngIf="userData">
+            <div class="panel-heading">
+                <span><i class="fa fa-comments fa-2x"></i> Santa's Helpers wrote:</span><br>
+            </div>
+            <div class="panel-body" style="padding: 2px !important;">
+                <feedback-panel [userId]="userId"></feedback-panel>
+            </div>
+        </div>
+    </div>
+</div>
 </div>

@@ -8,10 +8,10 @@ import { AuthService } from '../services/auth.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  private model :any = {};
-  private loading: boolean = false;
-  private returnUrl: string;
-  private errorMessage: string;
+  public model :any = {};
+  public loading: boolean = false;
+  public returnUrl: string;
+  public errorMessage: string;
 
   constructor(
     private route: ActivatedRoute,

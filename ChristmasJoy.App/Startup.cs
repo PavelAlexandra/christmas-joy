@@ -88,8 +88,11 @@ namespace ChristmasJoy.App
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IWishListRepository, WishListRepository>();
             services.AddScoped<ISecretSantasRepository, SecretSantasRepository>();
-            
+            services.AddScoped<ICommentsRepository, CommentsRepository>();
+
             services.AddScoped<ISignInService, SignInService>();
+            services.AddScoped<IChristmasStatusService, ChristmasStatusService>();
+            
             services.AddScoped<IIdentityResolver, IdentityResolver>();
             services.AddScoped<IDocumentHelper, DocumentHelper>();
       #endregion

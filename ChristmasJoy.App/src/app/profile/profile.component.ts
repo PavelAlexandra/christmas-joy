@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { Router, ActivatedRoute, ParamMap, NavigationEnd } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { UsersService } from '../services/users.service';
 import { LoggedInUser } from '../models/LoggedInUser';
@@ -14,22 +14,34 @@ import { WishlistService } from '../services/wishlist.service';
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
   private userSubscription: Subscription;
-  private currentUserId: number;
-  private userId: number;
-  private userData: UserData;
+  public currentUserId: number;
+  public userId: number;
+  public userData: UserData;
   public errorMessage: string = '';
-  public userStatus: string = 'elf'; 
-  private isEditingWishlist: boolean =  false;
-  private isSantaPanelOpen: boolean = false;
-  private loadingSanta: boolean = false;
+  public isEditingWishlist: boolean =  false;
+  public isSantaPanelOpen: boolean = false;
+  public loadingSanta: boolean = false;
 
   constructor(private authSrv: AuthService,
     private usersSrv: UsersService,
     private wishlistSrv: WishlistService,
     private route: ActivatedRoute,
     private router: Router) {
+      this.router.routeReuseStrategy.shouldReuseRoute = function(){
+        return false;
+     }
+
+     this.router.events.subscribe((evt) => {
+        if (evt instanceof NavigationEnd) {
+           // trick the Router into believing it's last link wasn't previously loaded
+           this.router.navigated = false;
+           // if you need to scroll back to top, here is the right place
+           window.scrollTo(0, 0);
+        }
+    });
+
       let id;
       this.userData = null;
       this.route.params.subscribe(params=>{
@@ -64,7 +76,9 @@ export class ProfileComponent implements OnInit {
   ngOnInit(){
     this.userSubscription = this.authSrv.authCurrentUser$
     .subscribe(user=> {
-      this.currentUserId = user.Id;
+      if(user){
+        this.currentUserId = user.Id;
+      }
     });   
   }
 
@@ -146,5 +160,9 @@ export class ProfileComponent implements OnInit {
   toggleSantaPanelOpen(event: MouseEvent): void {
     event.preventDefault();
     this.isSantaPanelOpen = !this.isSantaPanelOpen;
+  }
+
+  ngOnDestroy(){
+    this.userSubscription.unsubscribe();
   }
 }

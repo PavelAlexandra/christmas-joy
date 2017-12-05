@@ -14,15 +14,22 @@ export abstract class BaseService {
     }
 
     var modelStateErrors: string = '';
-    var serverError = error.json();
-
-    if (!serverError.type) {
-      for (var key in serverError) {
-        if (serverError[key])
-          modelStateErrors += serverError[key] + '\n';
+    try
+    {
+      var serverError = error.json();
+      if (!serverError.type) {
+        for (var key in serverError) {
+          if (serverError[key])
+            modelStateErrors += serverError[key] + '\n';
+        }
       }
     }
-
+    catch(e)
+    {
+       if(error){
+         modelStateErrors = error;
+       }
+    }
     modelStateErrors = modelStateErrors = '' ? null : modelStateErrors;
     return Observable.throw(modelStateErrors || 'Server error');
   }

@@ -20,7 +20,7 @@ export class AuthGuardService implements CanActivate {
     var currentUser = this.authService.getCurrentUser();
 
     if (expectedRole == 'Admin' && !currentUser.IsAdmin) {
-      this.router.navigate(['/login']);
+      this.router.navigate(['/']);
       return false;
     }
 

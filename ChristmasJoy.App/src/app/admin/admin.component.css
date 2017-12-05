@@ -9,3 +9,16 @@
 .cmd-btn{
     margin-right:2px;
 }
+.text-wrap{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; 
+}
+@media (max-width: 768px) { /* use the max to specify at each container level */
+    .specifictd {    
+        width:120px;  /* adjust to desired wrapping */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}

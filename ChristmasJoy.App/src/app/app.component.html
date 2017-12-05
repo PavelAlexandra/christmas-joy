@@ -1,31 +1,32 @@
+<div class="box">
+<div class="row-header">
 <nav class="navbar" role="navigation">
     <div class="container">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#top-navbar-1">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="fa fa-bars fa-2x"></span>
+      <div class="navbar-header" [ngClass]="{'navbar-large-header': !isLoggedIn}">
+        <button type="button" class="navbar-toggle collapsed" *ngIf="isLoggedIn">
+          <a class="cmd-link" (click)="toggleMenu()"><i class="fa fa-bars fa-2x"></i></a>
         </button>
         <a class="navbar-brand" [routerLink]="['/dashboard']">
-          <img src="assets/images/logo.png" style="width:55%">
+          <img class="brand-img" [ngClass]="{'large-brand-img': !isLoggedIn}" src="assets/images/logo.png">
         </a>
       </div>
       <!-- Collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse" id="top-navbar-1">
+      <div class="collapse navbar-collapse" [ngClass]="{'in': isMenuOpen}" id="top-navbar-1">
         <ul class="nav navbar-nav navbar-right">
           <li class="active" *ngIf="isLoggedIn">
-            <a [routerLink]="['/dashboard']"><i class="fa fa-home"></i> Home</a>
+            <a [routerLink]="['/dashboard']" (click)="closeMenu()"><i class="fa fa-home"></i> Home</a>
           </li>
           <li *ngIf="isLoggedIn">
-            <a [routerLink]="['/profile', userId]"><i class="fa fa-user"></i> Profile</a>
+            <a [routerLink]="['/profile', userId]" (click)="closeMenu()"><i class="fa fa-user"></i> Profile</a>
             
           </li>
           <li *ngIf="isAdmin && isLoggedIn">
-            <a  [routerLink]="['/admin']">
+            <a  [routerLink]="['/admin']" (click)="closeMenu()">
               <i class="fa fa-gears"></i> Admin
             </a>
           </li>
           <li *ngIf="isLoggedIn">
-            <a (click)="logout()" >
+            <a (click)="logout()" (click)="closeMenu()">
               <i class="fa fa-power-off"></i> Log out
             </a>
           </li>
@@ -40,8 +41,10 @@
           </div>
       </div>
   </div>
-  <div class="services-container">
-      <div class="container">
+</div>
+  <div class="content-container row-content">
+      <div >
           <router-outlet></router-outlet>
       </div>
   </div>
+</div>

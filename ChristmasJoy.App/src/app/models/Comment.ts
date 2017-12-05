@@ -1,3 +1,5 @@
+import { UserStatus } from './UserStatus';
+
 export class Comment{
     id: string;
     fromUserId: number;
@@ -5,5 +7,13 @@ export class Comment{
     commentType: number; //0-Negative, 1-Positive
     toUserId: number;
     commentDate: Date;
-    Likes: number[]; //array of user ids
+    likes: number[]; //array of user ids
+    fromUserStatus: UserStatus;
+    
+    commentTypeTxt(){
+        if(this.commentType == 1)
+            return "positive";
+        else
+            return "negative";
+    }
 }
