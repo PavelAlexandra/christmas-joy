@@ -9,6 +9,7 @@ export class Comment{
     commentDate: Date;
     likes: number[]; //array of user ids
     fromUserStatus: UserStatus;
+    isAnonymous: boolean = false;
     
     commentTypeTxt(){
         if(this.commentType == 1)

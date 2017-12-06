@@ -33,6 +33,8 @@ namespace ChristmasJoy.App.Models
 
     [JsonProperty(PropertyName = "likes")]
     public List<int> Likes { get; set; }
+
+    public bool IsAnonymous { get; set; }
   }
 
   public class Like
