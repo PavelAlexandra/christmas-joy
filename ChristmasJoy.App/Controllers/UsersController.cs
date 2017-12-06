@@ -153,7 +153,7 @@ namespace ChristmasJoy.App.Controllers
           var userStatus = _statusService.GetUserStatus(user.CustomId, user.UserName);
           userStatuses.Add(userStatus);
         }
-        userStatuses.OrderBy(x => x.Points);
+        userStatuses = userStatuses.OrderByDescending(x => x.Points).ThenBy(x => x.UserName).ToList();
 
         return Ok(new { data = userStatuses });
       }

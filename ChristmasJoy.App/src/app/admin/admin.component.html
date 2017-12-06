@@ -62,8 +62,8 @@
                 <input *ngIf="user.customId == 0" type="text" [(ngModel)]="user.hashedPassword" />
             </td>
             <td>
-              <i class="fa fa-check green" *ngIf="user.SecretSantaForId"></i>
-              <i class="fa fa-close red" *ngIf="!user.SecretSantaForId"></i>
+              <i class="fa fa-check green" *ngIf="user.secretSantaForId"></i>
+              <i class="fa fa-close red" *ngIf="!user.secretSantaForId"></i>
             </td>
             <td>
               <div *ngIf="user.customId == editUserId" style="display:flex;" class="pull-right">

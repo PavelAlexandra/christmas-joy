@@ -28,6 +28,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   public statusPercentage: number = 0;
   public nextStatus: string = null;
   public isSavingWishList: boolean = false;
+  public isLoadingUser: boolean = false;
 
   constructor(private authSrv: AuthService,
     private usersSrv: UsersService,
@@ -67,10 +68,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   getUserData(){
+    this.isLoadingUser = true;
     this.usersSrv.getAllUserData(this.userId)
     .subscribe(
       response => {
         if(response){
+          this.isLoadingUser = false;
           this.userData = response;
           let nextStatus = UserStatus.nextStatusData(this.userData.status.christmasStatus, 
                                                      this.userData.status.points);
@@ -80,7 +83,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
           }
         }
       },
-      error => {this.errorMessage = error;}
+      error => {
+        this.errorMessage = error;
+        this.isLoadingUser = false;
+      }
     )
   }
 
