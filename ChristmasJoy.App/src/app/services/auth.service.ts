@@ -107,6 +107,8 @@ export class AuthService extends BaseService {
   }
 
   isLoggedIn() {
-    return !this.isTokenExpired();
+    let isLoggedIn = !this.isTokenExpired();
+    this._authNavStatusSource.next(isLoggedIn);
+    return isLoggedIn;
   }  
 }

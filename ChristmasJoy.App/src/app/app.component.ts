@@ -35,8 +35,12 @@ export class AppComponent implements OnInit, OnDestroy {
     
   }
 
-  toggleMenu(){
+  toggleMenu($event){
+    if($event.handled === false) return
+    $event.stopPropagation();
+    $event.preventDefault();
     this.isMenuOpen = !this.isMenuOpen;
+    $event.handled = true;
   }
   closeMenu(){
     this.isMenuOpen = false;

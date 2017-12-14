@@ -17,6 +17,8 @@ export class DashboardComponent implements OnInit, OnDestroy{
   public goodUsers: UserData[];
   public errorMessage: string;
   public isLoading: boolean = false;
+  public secretSantaDate: string = "December 15, 2017 20:00:00";
+  public christmasDate: string = "December 25, 2017 00:00:00";
 
   constructor(private authSrv: AuthService,
   private userSrv: UsersService) { }
@@ -37,6 +39,16 @@ export class DashboardComponent implements OnInit, OnDestroy{
 
   getStatusImg(user: UserStatus){
     return '/assets/images/'+user.christmasStatus + '.jpg';
+  }
+
+  isPassedSecretSanta(){
+    let date = new Date(this.secretSantaDate);
+    return (date.valueOf() < new Date().valueOf())
+  }
+
+  isPassedChristmas(){
+    let date = new Date(this.christmasDate);
+    return (date.valueOf() < new Date().valueOf())
   }
 
   getUserStatuses(){

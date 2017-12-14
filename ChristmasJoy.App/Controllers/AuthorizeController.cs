@@ -56,13 +56,14 @@ namespace ChristmasJoy.App.Controllers
         }
 
         var claims = _identityResolver.GetIdentityCaims(user);
+        var now = DateTime.UtcNow;
 
         var jwt = new JwtSecurityToken(
             issuer: _jwtOptions.Issuer,
             audience: _jwtOptions.Audience,
             claims: claims,
-            notBefore: _jwtOptions.NotBefore,
-            expires: _jwtOptions.Expiration,
+            notBefore: now,
+            expires: now.Add(_jwtOptions.ValidFor),
             signingCredentials: _jwtOptions.SigningCredentials);
 
         var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);

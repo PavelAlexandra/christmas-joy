@@ -1,12 +1,17 @@
 <div class="counter">
-    <div class="row count-down">
+    <div class="row count-down" *ngIf="!isPassedChristmas()">
         <div class="center-block">
-            <count-down [dateString]='"December 25, 2017 00:00:00"'></count-down> until <span class="fa-red bold">Christmas</span>!!
+            <count-down [dateString]='christmasDate'></count-down> until <span class="fa-red bold">Christmas</span>!!
         </div>
     </div>
-    <div class="row count-down">
+    <div class="row count-down" *ngIf="!isPassedSecretSanta()">
         <div class="center-block">
-            <count-down [dateString]='"December 15, 2017 20:00:00"'></count-down> until <span class="fa-red bold">Secret Santa</span>!!
+            <count-down [dateString]='secretSantaDate'></count-down> until <span class="fa-red bold">Secret Santa</span>!!
+        </div>
+    </div>
+    <div class="row count-down" *ngIf="isPassedChristmas()">
+        <div class="center-block">
+            <span class="fa-red bold">Merry Christmas, TrendVille!</span>
         </div>
     </div>
 </div>

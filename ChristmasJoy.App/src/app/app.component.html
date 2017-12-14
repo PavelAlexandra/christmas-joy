@@ -4,7 +4,7 @@
     <div class="container">
       <div class="navbar-header" [ngClass]="{'navbar-large-header': !isLoggedIn}">
         <button type="button" class="navbar-toggle collapsed" *ngIf="isLoggedIn">
-          <a class="cmd-link" (click)="toggleMenu()"><i class="fa fa-bars fa-2x"></i></a>
+          <a class="cmd-link" (click)="toggleMenu($event)" (touchstart)="toggleMenu($event)"><i class="fa fa-bars fa-2x"></i></a>
         </button>
         <div [ngClass]="{'center-block': !isLoggedIn}">
         <a class="navbar-brand" [routerLink]="['/dashboard']">
