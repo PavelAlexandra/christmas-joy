@@ -1,7 +1,7 @@
 assembly-versioning-scheme: MajorMinorPatchTag
 mode: ContinuousDeployment
 tag-prefix: v20|20
-next-version: 2.0
+next-version: 1.2
 commit-message-incrementing: Disabled
 continuous-delivery-fallback-tag: ''
 branches:
@@ -19,7 +19,7 @@ branches:
     increment: None
   support[/-]:
     mode: ContinuousDeployment
-    tag: support
+    tag: ''
     increment: Inherit
   features?[/-]:
     mode: ContinuousDeployment
