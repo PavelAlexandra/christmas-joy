@@ -25,7 +25,7 @@ branches:
     mode: ContinuousDeployment
     tag: useBranchName
     increment: Inherit
-   support[/-]:
+  support[/-]:
     mode: ContinuousDeployment
     tag: useBranchName
     increment: Inherit
