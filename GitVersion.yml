@@ -17,15 +17,15 @@ branches:
     mode: ContinuousDeployment
     tag: beta
     increment: None
+  support[/-]:
+    mode: ContinuousDeployment
+    tag: support
+    increment: Inherit
   features?[/-]:
     mode: ContinuousDeployment
     tag: useBranchName
     increment: Inherit
   fix[/-]:
-    mode: ContinuousDeployment
-    tag: useBranchName
-    increment: Inherit
-  support[/-]:
     mode: ContinuousDeployment
     tag: useBranchName
     increment: Inherit
