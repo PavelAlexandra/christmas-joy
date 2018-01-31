@@ -1,0 +1,46 @@
+assembly-versioning-scheme: MajorMinorPatchTag
+mode: ContinuousDeployment
+tag-prefix: v20|20
+next-version: 1.2
+commit-message-incrementing: Disabled
+continuous-delivery-fallback-tag: ''
+branches:
+  dev(elop)?(ment)?$:
+    mode: ContinuousDeployment
+    tag: alpha
+    increment: Patch
+  master:
+    mode: ContinuousDeployment
+    tag: ''
+    increment: None
+  releases?[/-]:
+    mode: ContinuousDeployment
+    tag: ''
+    increment: None
+  support[/-]:
+    mode: ContinuousDeployment
+    tag: 'support'
+    increment: Inherit
+  features?[/-]:
+    mode: ContinuousDeployment
+    tag: useBranchName
+    increment: Inherit
+  fix[/-]:
+    mode: ContinuousDeployment
+    tag: useBranchName
+    increment: Inherit
+  refactor[/-]:
+    mode: ContinuousDeployment
+    tag: useBranchName
+    increment: Inherit
+  hotfix[/-]:
+    mode: ContinuousDeployment
+    tag: useBranchName
+    increment: Inherit
+  (pull|pull\-requests|pr)[/-]:
+    mode: ContinuousDeployment
+    tag: PullRequest
+    increment: Inherit
+    tag-number-pattern: '[/-](?<number>\d+)[-/]'
+ignore:
+  sha: []
