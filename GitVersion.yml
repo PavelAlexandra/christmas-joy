@@ -19,7 +19,7 @@ branches:
     increment: None
   support[/-]:
     mode: ContinuousDeployment
-    tag: 'support'
+    tag: ''
     increment: Inherit
   features?[/-]:
     mode: ContinuousDeployment
