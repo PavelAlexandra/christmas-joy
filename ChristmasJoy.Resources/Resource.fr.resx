@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,12 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="page_title" xml:space="preserve">
-    <value>TBD: Page Title</value>
+    <value>Le page</value>
   </data>
   <data name="user" xml:space="preserve">
-    <value>user</value>
+    <value>Le user</value>
   </data>
   <data name="welcomeMessage" xml:space="preserve">
-    <value>bonjour</value>
+    <value>Le message</value>
   </data>
 </root>
