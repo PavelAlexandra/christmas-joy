@@ -1,9 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+
 import { AuthService } from '../services/auth.service';
+import { Subscription } from 'rxjs';
 import { UserData } from '../models/UserData';
-import { UsersService } from '../services/users.service';
 import { UserStatus } from '../models/UserStatus';
+import { UsersService } from '../services/users.service';
 
 @Component({
   selector: 'dashboard',
@@ -17,8 +18,8 @@ export class DashboardComponent implements OnInit, OnDestroy{
   public goodUsers: UserData[];
   public errorMessage: string;
   public isLoading: boolean = false;
-  public secretSantaDate: string = "December 15, 2017 20:00:00";
-  public christmasDate: string = "December 25, 2017 00:00:00";
+  public secretSantaDate: string = "December 14, 2018 20:00:00";
+  public christmasDate: string = "December 25, 2018 00:00:00";
 
   constructor(private authSrv: AuthService,
   private userSrv: UsersService) { }
@@ -30,7 +31,7 @@ export class DashboardComponent implements OnInit, OnDestroy{
      if(user){
       this.currentUserId = user.Id;
      }
-   }); 
+   });
   }
 
   ngOnDestroy(){

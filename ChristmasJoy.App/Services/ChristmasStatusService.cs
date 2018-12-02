@@ -1,4 +1,4 @@
-using ChristmasJoy.App.DbRepositories;
+using ChristmasJoy.App.DbRepositories.Interfaces;
 using ChristmasJoy.App.Models;
 using System.Collections.Generic;
 using System.Linq;

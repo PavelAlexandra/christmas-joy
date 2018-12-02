@@ -1,50 +1,51 @@
+using AutoMapper;
+using ChristmasJoy.App.DbRepositories.Interfaces;
 using ChristmasJoy.App.Helpers;
 using ChristmasJoy.App.Models;
+using ChristmasJoy.App.Models.Dtos;
 using Microsoft.Azure.Documents.Client;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ChristmasJoy.App.DbRepositories
+namespace ChristmasJoy.App.DbRepositories.DocumentDb
 {
-  public interface IWishListRepository
-  {
-    Task<string> AddWishItemAsync(WishListItem item);
-    Task UpdateWishItemAsync(WishListItem item);
-    Task DeleteWishItemAsync(WishListItem item);
-    List<WishListItem> GetWishList(int userId);
-  }
   public class WishListRepository : IWishListRepository
   {
     private readonly IAppConfiguration _configuration;
     private readonly DocumentClient client;
+    private readonly IMapper _mapper;
 
-    public WishListRepository(IAppConfiguration configuration, IDocumentHelper documentClient)
+    public WishListRepository(
+      IAppConfiguration configuration,
+      IDocumentHelper documentClient,
+      IMapper mapper)
     {
       _configuration = configuration;
       client = documentClient.GetDocumentClient(configuration);
+      _mapper = mapper;
     }
 
-    public async Task<string> AddWishItemAsync(WishListItem item)
+    public async Task<string> AddWishItemAsync(WishListItemViewModel item)
     {
+      var dbItem = _mapper.Map<DbWishListItem>(item);
       var docUri = UriFactory.CreateDocumentCollectionUri(Constants.DocumentDatabase, Constants.DocumentWishListCollection);
-      item.Id = null;
-      var response = await this.client.CreateDocumentAsync(docUri, item);
+      dbItem.Id = null;
+      var response = await this.client.CreateDocumentAsync(docUri, dbItem);
       return response.Resource.Id;
     }
 
-    public async Task UpdateWishItemAsync(WishListItem item)
+    public async Task UpdateWishItemAsync(WishListItemViewModel item)
     {
       var docUri = UriFactory.CreateDocumentUri(
                     Constants.DocumentDatabase,
                     Constants.DocumentWishListCollection,
                     item.Id);
-
-      await this.client.ReplaceDocumentAsync(docUri, item);
+      var dbItem = _mapper.Map<DbWishListItem>(item);
+      await this.client.ReplaceDocumentAsync(docUri, dbItem);
     }
 
-    public async Task DeleteWishItemAsync(WishListItem item)
+    public async Task DeleteWishItemAsync(WishListItemViewModel item)
     {
       var docUri = UriFactory.CreateDocumentUri(
            Constants.DocumentDatabase,
@@ -54,16 +55,16 @@ namespace ChristmasJoy.App.DbRepositories
       await this.client.DeleteDocumentAsync(docUri);
     }
 
-    public List<WishListItem> GetWishList(int userId)
+    public List<WishListItemViewModel> GetWishList(int userId)
     {
       FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
       var collectionUri = UriFactory.CreateDocumentCollectionUri(Constants.DocumentDatabase, Constants.DocumentWishListCollection);
 
-      IQueryable<WishListItem> userQuery = this.client.CreateDocumentQuery<WishListItem>(
+      IQueryable<DbWishListItem> userQuery = this.client.CreateDocumentQuery<DbWishListItem>(
                   collectionUri, queryOptions)
                .Where(u => u.UserId == userId);
 
-      return userQuery.ToList();
+      return userQuery.Select(item => _mapper.Map<WishListItemViewModel>(item)).ToList();
     }
   }
 }

@@ -1,14 +1,18 @@
 using AutoMapper;
+using ChristmasJoy.App.DbRepositories.DocumentDb;
+using ChristmasJoy.App.DbRepositories.Interfaces;
+using ChristmasJoy.App.DbRepositories.SqLite;
 using ChristmasJoy.App.Helpers;
-using ChristmasJoy.App.Services;
 using ChristmasJoy.App.Models;
-using ChristmasJoy.App.DbRepositories;
+using ChristmasJoy.App.Services;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Cors.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -16,12 +20,10 @@ using System;
 using System.IO;
 using System.Net;
 using System.Text;
-using Microsoft.AspNetCore.Mvc.Cors.Internal;
-using Microsoft.AspNetCore.Mvc;
 
 namespace ChristmasJoy.App
 {
-  public class Startup
+    public class Startup
     {
         public IConfiguration Configuration { get; }
 
@@ -85,20 +87,18 @@ namespace ChristmasJoy.App
 
             var appConfig = new AppConfiguration(Configuration);
             services.AddSingleton<IAppConfiguration>(appConfig);
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IWishListRepository, WishListRepository>();
-            services.AddScoped<ISecretSantasRepository, SecretSantasRepository>();
-            services.AddScoped<ICommentsRepository, CommentsRepository>();
+           
 
             services.AddScoped<ISignInService, SignInService>();
             services.AddScoped<IChristmasStatusService, ChristmasStatusService>();
             
             services.AddScoped<IIdentityResolver, IdentityResolver>();
             services.AddScoped<IDocumentHelper, DocumentHelper>();
+            ConfigureDatabaseRepositories(appConfig, services);
       #endregion
 
-            #region EnableCord
-            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+      #region EnableCord
+      services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
             {
               builder.AllowAnyOrigin()
                      .AllowAnyMethod()
@@ -158,9 +158,28 @@ namespace ChristmasJoy.App
             app.UseCors("MyPolicy");
 
             //Configure the app for usage as API with default route at '/api/[Controller]'
-            app.UseMvcWithDefaultRoute();
-
-               
+            app.UseMvcWithDefaultRoute();               
         }
-    }
+
+        private void ConfigureDatabaseRepositories(IAppConfiguration appConfig, IServiceCollection services)
+        {
+            if (!string.IsNullOrEmpty(appConfig.DocumentDBEndpointUrl))
+            {
+              services.AddScoped<IUserRepository, UserRepository>();
+              services.AddScoped<IWishListRepository, WishListRepository>();
+              services.AddScoped<ISecretSantasRepository, SecretSantasRepository>();
+              services.AddScoped<ICommentsRepository, CommentsRepository>();
+            }
+            else
+            {
+        // Database
+        // services.AddDbContext<ChristmasDbContext>(options => options.UseSqlServer(appConfig.SqLiteConnectionString));
+              services.AddScoped<ChristmasDbContextFactory, ChristmasDbContextFactory>();
+              services.AddScoped<IUserRepository, SqLiteUserRepository>();
+              services.AddScoped<IWishListRepository, SqLiteWishListRepository>();
+              services.AddScoped<ISecretSantasRepository, SqLiteSecretSantasRepository>();
+              services.AddScoped<ICommentsRepository, SqlLiteCommentsRepository>();
+            }
+        }
+  }
 }

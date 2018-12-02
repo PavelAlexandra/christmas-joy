@@ -1,10 +1,10 @@
-using ChristmasJoy.App.DbRepositories;
+using ChristmasJoy.App.DbRepositories.Interfaces;
 using ChristmasJoy.App.Models;
+using ChristmasJoy.App.Models.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,7 +26,7 @@ namespace ChristmasJoy.App.Controllers
     }
 
     [HttpPost("add")]
-    public async Task<IActionResult> AddItem([FromBody] Comment item)
+    public async Task<IActionResult> AddItem([FromBody] CommentViewModel item)
     {
       try
       {
@@ -76,11 +76,11 @@ namespace ChristmasJoy.App.Controllers
     }
 
     [HttpPost("like/{userId}")]
-    public IActionResult LikeComment(int userId, [FromBody] Like like)
+    public async Task<IActionResult> LikeComment(int userId, [FromBody] LikeViewModel like)
     {
       try
       {
-        _commRepo.SetLike(userId, like.CommentId);
+        await _commRepo.SetLikeAsync(userId, like.CommentId);
         return Ok();
       }
       catch (Exception ex)

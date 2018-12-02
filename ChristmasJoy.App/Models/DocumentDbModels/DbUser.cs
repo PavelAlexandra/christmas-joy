@@ -2,9 +2,9 @@ using Newtonsoft.Json;
 
 namespace ChristmasJoy.App.Models
 {
-  public class User
+  public class DbUser
   {
-    public User()
+    public DbUser()
     {
 
     }

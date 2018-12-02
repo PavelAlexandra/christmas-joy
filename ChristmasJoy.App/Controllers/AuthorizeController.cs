@@ -1,14 +1,14 @@
+using ChristmasJoy.App.DbRepositories.Interfaces;
 using ChristmasJoy.App.Helpers;
+using ChristmasJoy.App.Models;
 using ChristmasJoy.App.Services;
 using ChristmasJoy.App.ViewModels;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
-using ChristmasJoy.App.Models;
-using ChristmasJoy.App.DbRepositories;
-using Microsoft.AspNetCore.Cors;
 
 namespace ChristmasJoy.App.Controllers
 {

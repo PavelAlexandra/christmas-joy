@@ -1,12 +1,13 @@
+using ChristmasJoy.App.Models.Dtos;
 using System.Collections.Generic;
 
 namespace ChristmasJoy.App.Models
 {
   public class UserData
   {
-    public User UserInfo { get; set; }
+    public UserViewModel UserInfo { get; set; }
 
-    public List<WishListItem> WishList { get; set; }
+    public List<WishListItemViewModel> WishList { get; set; }
 
     public UserStatus Status { get; set; }
   }

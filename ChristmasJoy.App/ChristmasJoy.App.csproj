@@ -23,6 +23,8 @@
     <PackageReference Include="Microsoft.Azure.DocumentDB" Version="1.19.1" />
     <PackageReference Include="Microsoft.Azure.DocumentDB.Core" Version="1.7.1" />
     <PackageReference Include="Microsoft.DotNet.Watcher.Tools" Version="2.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.1.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.1.4" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="5.1.5" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.0" />
   </ItemGroup>
@@ -37,7 +39,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="AppData\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
-
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.0" />
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" />
+  </ItemGroup>
 </Project>

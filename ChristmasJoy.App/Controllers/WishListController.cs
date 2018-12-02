@@ -1,12 +1,11 @@
+using ChristmasJoy.App.DbRepositories.Interfaces;
+using ChristmasJoy.App.Models;
+using ChristmasJoy.App.Models.Dtos;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using ChristmasJoy.App.DbRepositories;
-using ChristmasJoy.App.Models;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Authorization;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace ChristmasJoy.App.Controllers
 {
@@ -40,7 +39,7 @@ namespace ChristmasJoy.App.Controllers
     }
 
     [HttpPost("add")]
-    public async Task<IActionResult> AddItem([FromBody] WishListItem item)
+    public async Task<IActionResult> AddItem([FromBody] WishListItemViewModel item)
     {
       try
       {
@@ -62,7 +61,7 @@ namespace ChristmasJoy.App.Controllers
     }
 
     [HttpPost("update")]
-    public async Task<IActionResult> UpdateItem([FromBody] WishListItem item)
+    public async Task<IActionResult> UpdateItem([FromBody] WishListItemViewModel item)
     {
       try
       {
@@ -84,7 +83,7 @@ namespace ChristmasJoy.App.Controllers
     }
 
     [HttpPost("delete")]
-    public async Task<IActionResult> DeleteItem([FromBody] WishListItem item)
+    public async Task<IActionResult> DeleteItem([FromBody] WishListItemViewModel item)
     {
       try
       {

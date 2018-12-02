@@ -1,17 +1,11 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ChristmasJoy.App.Models
 {
-  public enum CommentType
-  {
-    Negative = 0,
-    Positive = 1
-  }
-  public class Comment
+  
+  public class DbComment
   {
     [JsonProperty(PropertyName = "id")]
     public string Id { get; set; }
@@ -35,10 +29,5 @@ namespace ChristmasJoy.App.Models
     public List<int> Likes { get; set; }
 
     public bool IsAnonymous { get; set; }
-  }
-
-  public class Like
-  {
-    public string CommentId { get; set; }
   }
  }

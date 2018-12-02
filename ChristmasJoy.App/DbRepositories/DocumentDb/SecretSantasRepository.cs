@@ -1,35 +1,39 @@
+using AutoMapper;
+using ChristmasJoy.App.DbRepositories.Interfaces;
 using ChristmasJoy.App.Helpers;
 using ChristmasJoy.App.Models;
+using ChristmasJoy.App.Models.Dtos;
 using Microsoft.Azure.Documents.Client;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ChristmasJoy.App.DbRepositories
+namespace ChristmasJoy.App.DbRepositories.DocumentDb
 {
-  public interface ISecretSantasRepository
-  {
-    Task AddUserAsync(int receiverId);
-    Task SetSecretSanta(int receiverId, int santaUserId);
-    int? GetSantaReceiverId(int santaUserId);
-    List<SecretSanta> GetAvailableReceivers(int secretSantaId);
-  }
-
   public class SecretSantasRepository: ISecretSantasRepository
   {
     private readonly IAppConfiguration _configuration;
     private readonly DocumentClient client;
+    private readonly IMapper _mapper;
+    private readonly IUserRepository _userRepository;
 
-    public SecretSantasRepository(IAppConfiguration configuration, IDocumentHelper documentClient)
+    public SecretSantasRepository(
+      IAppConfiguration configuration,
+      IDocumentHelper documentClient,
+      IMapper mapper,
+      IUserRepository userRepository)
     {
       _configuration = configuration;
       client = documentClient.GetDocumentClient(configuration);
+      _mapper = mapper;
+      _userRepository = userRepository;
     }
 
     public async Task AddUserAsync(int receiverId)
     {
       var docUri = UriFactory.CreateDocumentCollectionUri(Constants.DocumentDatabase, Constants.DocumentSantasCollection);
-      var santa = new SecretSanta
+      var santa = new DbSecretSanta
       {
         ReceiverUserId = receiverId,
         SantaUserId = null,
@@ -39,16 +43,19 @@ namespace ChristmasJoy.App.DbRepositories
       await this.client.CreateDocumentAsync(docUri, santa);
     }
 
-    public async Task SetSecretSanta(int receiverId, int santaUserId)
+    public async Task<string> SetSecretSantaAsync(int receiverId, int santaUserId)
     {
       FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
 
-      IQueryable<SecretSanta> query = this.client.CreateDocumentQuery<SecretSanta>(
+      IQueryable<DbSecretSanta> query = this.client.CreateDocumentQuery<DbSecretSanta>(
                 UriFactory.CreateDocumentCollectionUri(Constants.DocumentDatabase, Constants.DocumentSantasCollection), queryOptions)
                 .Where(u => u.ReceiverUserId == receiverId);
 
       var santaEntity = query.ToList().FirstOrDefault();
-      if (santaEntity != null)
+      var santaUser = _userRepository.GetUser(santaUserId);
+      var receiverUser = _userRepository.GetUser(receiverId);
+
+      if (santaEntity != null && santaUser != null && receiverUser != null)
       {
         santaEntity.SantaUserId = santaUserId;
         await this.client.ReplaceDocumentAsync(
@@ -57,14 +64,25 @@ namespace ChristmasJoy.App.DbRepositories
                     Constants.DocumentSantasCollection,
                     santaEntity.Id),
                   santaEntity);
+
+        santaUser.SecretSantaFor = receiverUser.UserName;
+        santaUser.SecretSantaForId = receiverUser.CustomId;
+
+        await _userRepository.UpdateUserAsync(santaUser);
       }
-     }
+      else
+      {
+        throw new ArgumentException("Invalid ids");
+      }
+
+      return receiverUser.UserName;
+    }
 
       public int? GetSantaReceiverId(int santaUserId)
       {
         FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
 
-        IQueryable<SecretSanta> query = this.client.CreateDocumentQuery<SecretSanta>(
+        IQueryable<DbSecretSanta> query = this.client.CreateDocumentQuery<DbSecretSanta>(
                   UriFactory.CreateDocumentCollectionUri(Constants.DocumentDatabase, Constants.DocumentSantasCollection), queryOptions)
                   .Where(u => u.SantaUserId == santaUserId);
 
@@ -79,15 +97,15 @@ namespace ChristmasJoy.App.DbRepositories
         }
       }
 
-    public List<SecretSanta> GetAvailableReceivers(int secretSantaId)
+    public List<SecretSantaViewModel> GetAvailableReceivers(int secretSantaId)
     {
       FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
 
-      IQueryable<SecretSanta> query = this.client.CreateDocumentQuery<SecretSanta>(
+      IQueryable<DbSecretSanta> query = this.client.CreateDocumentQuery<DbSecretSanta>(
                 UriFactory.CreateDocumentCollectionUri(Constants.DocumentDatabase, Constants.DocumentSantasCollection), queryOptions)
                 .Where(u => u.SantaUserId == null && u.ReceiverUserId != secretSantaId);
 
-      var santaReceivers = query.ToList();
+      var santaReceivers = query.Select(santa => _mapper.Map<SecretSantaViewModel>(santa)).ToList();
       return santaReceivers;
     }
   }

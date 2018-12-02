@@ -1,102 +1,93 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using ChristmasJoy.App.Models;
-using Microsoft.Azure.Documents.Client;
+using AutoMapper;
+using ChristmasJoy.App.DbRepositories.Interfaces;
 using ChristmasJoy.App.Helpers;
-using Microsoft.Azure.Documents;
-using System.Net;
+using ChristmasJoy.App.Models;
+using ChristmasJoy.App.Models.Dtos;
+using Microsoft.Azure.Documents.Client;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
-namespace ChristmasJoy.App.DbRepositories
+namespace ChristmasJoy.App.DbRepositories.DocumentDb
 {
-  public interface IUserRepository
-  {
-    List<Models.User> GetAllUsers();
-
-    Models.User GetUser(string email);
-
-    Models.User GetUser(int customId);
-
-    Task AddUserAsync(Models.User item);
-
-    Task UpdateUserAsync(Models.User item);
-
-    Task DeleteUserAsync(Models.User user);
-
-    int LastCustomId();
-  }
-
   public class UserRepository : IUserRepository
   {
     private readonly IAppConfiguration _configuration;
     private readonly DocumentClient client;
+    private readonly IMapper _mapper;
 
-    public UserRepository(IAppConfiguration configuration, IDocumentHelper documentClient)
+    public UserRepository(
+      IAppConfiguration configuration,
+      IDocumentHelper documentClient,
+      IMapper mapper)
     {
       _configuration = configuration;
       client = documentClient.GetDocumentClient(configuration);
-     
+      _mapper = mapper;
     }
 
-    public async Task AddUserAsync(Models.User user)
+    public async Task AddUserAsync(UserViewModel user)
     {
         var docUri = UriFactory.CreateDocumentCollectionUri(Constants.DocumentDatabase, Constants.DocumentUsersCollection);
-        await this.client.CreateDocumentAsync(docUri, user);
+        var dbUser = _mapper.Map<DbUser>(user);
+        await this.client.CreateDocumentAsync(docUri, dbUser);
     }
 
-    public async Task DeleteUserAsync(Models.User user)
+    public async Task DeleteUserAsync(UserViewModel user)
     {
-        await this.client.DeleteDatabaseAsync(UriFactory.CreateDocumentUri(
+      await this.client.DeleteDatabaseAsync(UriFactory.CreateDocumentUri(
           Constants.DocumentDatabase,
           Constants.DocumentUsersCollection,
-          user.id)); 
+          user.Id)); 
     }
 
-    public Models.User GetUser(string email)
+    public UserViewModel GetUser(string email)
     {
       FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
 
-      IQueryable<Models.User> userQuery  = this.client.CreateDocumentQuery<Models.User>(
+      IQueryable<DbUser> userQuery  = this.client.CreateDocumentQuery<DbUser>(
                 UriFactory.CreateDocumentCollectionUri(Constants.DocumentDatabase, Constants.DocumentUsersCollection), queryOptions)
                 .Where(u => u.Email.Equals(email));
 
-      return userQuery.ToList().FirstOrDefault();
+      var dbUser = userQuery.FirstOrDefault();
+      return _mapper.Map<UserViewModel>(dbUser);
     }
 
-    public Models.User GetUser(int customId)
+    public UserViewModel GetUser(int customId)
     {
       FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
 
-      IQueryable<Models.User> userQuery = this.client.CreateDocumentQuery<Models.User>(
+      IQueryable<DbUser> userQuery = this.client.CreateDocumentQuery<DbUser>(
                 UriFactory.CreateDocumentCollectionUri(Constants.DocumentDatabase, Constants.DocumentUsersCollection), queryOptions)
                 .Where(u => u.CustomId == customId);
 
-      return userQuery.ToList().FirstOrDefault();
+      var dbUser = userQuery.FirstOrDefault();
+      return _mapper.Map<UserViewModel>(dbUser);
     }
 
-    public List<Models.User> GetAllUsers()
+    public List<UserViewModel> GetAllUsers()
     {
       FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
 
-      var users = this.client.CreateDocumentQuery<Models.User>(
+      var usersQuery = this.client.CreateDocumentQuery<DbUser>(
                  UriFactory.CreateDocumentCollectionUri(Constants.DocumentDatabase, Constants.DocumentUsersCollection),
-                 queryOptions)
-                 .ToList();
+                 queryOptions);
 
-      return users;
+      return usersQuery.Select(user => _mapper.Map<UserViewModel>(user)).ToList();
     }
 
-    public async Task UpdateUserAsync(Models.User item)
+    public async Task UpdateUserAsync(UserViewModel item)
     {
+      var dbUser = _mapper.Map<DbUser>(item);
       await this.client.ReplaceDocumentAsync(
-        UriFactory.CreateDocumentUri(Constants.DocumentDatabase, Constants.DocumentUsersCollection, item.id), item);
+        UriFactory.CreateDocumentUri(Constants.DocumentDatabase, Constants.DocumentUsersCollection, dbUser.id), dbUser);
     }
 
     public int LastCustomId()
     {
       FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1 };
 
-      var maxCustomId = this.client.CreateDocumentQuery<Models.User>(
+      var maxCustomId = this.client.CreateDocumentQuery<DbUser>(
                  UriFactory.CreateDocumentCollectionUri(Constants.DocumentDatabase, Constants.DocumentUsersCollection),
                  queryOptions)
                  .Select(x=> x.CustomId)

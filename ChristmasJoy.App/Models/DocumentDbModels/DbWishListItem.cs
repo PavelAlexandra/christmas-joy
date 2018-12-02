@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace ChristmasJoy.App.Models
 {
-  public class WishListItem
+  public class DbWishListItem
   {
     [JsonProperty(PropertyName = "id")]
     public string Id { get; set; }

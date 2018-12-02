@@ -1,13 +1,15 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using ChristmasJoy.App.DbRepositories;
-using System;
-using ChristmasJoy.App.Models;
+using ChristmasJoy.App.DbRepositories.Interfaces;
 using ChristmasJoy.App.Helpers;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Cors;
+using ChristmasJoy.App.Models;
 using ChristmasJoy.App.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ChristmasJoy.App.Controllers
 {
@@ -21,8 +23,8 @@ namespace ChristmasJoy.App.Controllers
     private readonly IUserRepository _userRepo;
     private readonly IWishListRepository _wishListRepo;
     private readonly ICommentsRepository _commentsRepo;
-
-    private static object locker = new object();
+    
+    private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
     public UsersController(ISecretSantasRepository santasRepository,
       IUserRepository userRepository,
@@ -39,7 +41,7 @@ namespace ChristmasJoy.App.Controllers
 
     // GET: api/getSantaReceiver
     [HttpGet("getReceiver/{secretSantaId}")]
-    public IActionResult GetMySecretReceiver(int secretSantaId)
+    public async Task<IActionResult> GetMySecretReceiver(int secretSantaId)
     {
       try
       {
@@ -53,24 +55,26 @@ namespace ChristmasJoy.App.Controllers
           return BadRequest(Errors.AddErrorToModelState("user_id", "User already is a secret santa.", ModelState));
         }
 
-        lock (locker)
+        await _semaphore.WaitAsync();
+        try
         {
           var availableReceivers = _santasRepo.GetAvailableReceivers(secretSantaId);
 
           Random rnd = new Random();
-          var randomReceiverIndex = rnd.Next(0, availableReceivers.Count - 1);
-          var receiver = availableReceivers[randomReceiverIndex];
-          var receiverUser = _userRepo.GetUser(receiver.ReceiverUserId);
-          user.SecretSantaForId = receiverUser.CustomId;
-          user.SecretSantaFor = receiverUser.UserName;
+          var randomReceiverIndex = rnd.Next(1, availableReceivers.Count);
+          var receiver = availableReceivers[randomReceiverIndex-1];
 
-          _santasRepo.SetSecretSanta(receiver.ReceiverUserId, secretSantaId);
-          _userRepo.UpdateUserAsync(user);
+          var secretName = await _santasRepo.SetSecretSantaAsync(receiver.ReceiverUserId, secretSantaId);
           
           return Ok(new {
             receiverId = receiver.ReceiverUserId,
-            receiverName = receiverUser.UserName
+            receiverName = secretName
           });
+        }
+          finally
+        {
+          _semaphore.Release();
+
         }
       }
       catch (Exception ex)

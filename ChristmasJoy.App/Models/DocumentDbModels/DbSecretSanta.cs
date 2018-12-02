@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace ChristmasJoy.App.Models
 {
-  public class SecretSanta
+  public class DbSecretSanta
   {
     [JsonProperty(PropertyName = "id")]
     public string Id { get; set; }

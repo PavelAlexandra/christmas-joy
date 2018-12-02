@@ -1,16 +1,16 @@
+using ChristmasJoy.App.DbRepositories.Interfaces;
 using ChristmasJoy.App.Helpers;
+using ChristmasJoy.App.Models.Dtos;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using ChristmasJoy.App.Models;
-using ChristmasJoy.App.DbRepositories;
 
 namespace ChristmasJoy.App.Services
 {
   public interface IIdentityResolver
   {
-    List<Claim> GetIdentityCaims(User user);
+    List<Claim> GetIdentityCaims(UserViewModel user);
   }
 
   public class IdentityResolver: IIdentityResolver
@@ -22,7 +22,7 @@ namespace ChristmasJoy.App.Services
       _userRepository = userRepository;
     }
 
-    public List<Claim> GetIdentityCaims(User user)
+    public List<Claim> GetIdentityCaims(UserViewModel user)
     {
       var claims = new List<Claim>
        {

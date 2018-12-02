@@ -1,15 +1,16 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using ChristmasJoy.App.Models;
-using ChristmasJoy.App.DbRepositories;
-using System.Threading.Tasks;
-using ChristmasJoy.App.Services;
-using Microsoft.AspNetCore.Cors;
+using ChristmasJoy.App.DbRepositories.Interfaces;
 using ChristmasJoy.App.Helpers;
+using ChristmasJoy.App.Models;
+using ChristmasJoy.App.Models.Dtos;
+using ChristmasJoy.App.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace ChristmasJoy.App.Controllers
 {
-    [Route("api/[controller]")]
+  [Route("api/[controller]")]
     [Authorize(Roles = "Admin")] //Constants.Generic
     [EnableCors("MyPolicy")]
     public class LoginsController : Controller
@@ -50,7 +51,7 @@ namespace ChristmasJoy.App.Controllers
     }
 
     [HttpPost("AddUser")]
-    public async Task<IActionResult> AddUser([FromBody]User model)
+    public async Task<IActionResult> AddUser([FromBody]UserViewModel model)
     {
       try
       {
@@ -66,7 +67,7 @@ namespace ChristmasJoy.App.Controllers
         }
           
         model.CustomId = _userRepository.LastCustomId() + 1;
-        model.id = null;
+        model.Id = null;
         model.HashedPassword = _signInService.GetHashedPassword(model.HashedPassword);
 
         await _userRepository.AddUserAsync(model);
@@ -77,7 +78,7 @@ namespace ChristmasJoy.App.Controllers
          await _santasRepo.AddUserAsync(newUser.CustomId);
         }
 
-        return new JsonResult(new { id = newUser.id, customId = newUser.CustomId});
+        return new JsonResult(new { id = newUser.Id, customId = newUser.CustomId});
       }
       catch (System.Exception ex)
       {
@@ -89,7 +90,7 @@ namespace ChristmasJoy.App.Controllers
     }
 
     [HttpPost("UpdateUser")]
-    public async Task<IActionResult> UpdateUser([FromBody]User model)
+    public async Task<IActionResult> UpdateUser([FromBody]UserViewModel model)
     {
       try
       {
@@ -111,7 +112,7 @@ namespace ChristmasJoy.App.Controllers
     }
 
     [HttpPost("DeleteUser")]
-    public async Task<IActionResult> DeleteUser([FromBody]User model)
+    public async Task<IActionResult> DeleteUser([FromBody]UserViewModel model)
     {
       try
       {
