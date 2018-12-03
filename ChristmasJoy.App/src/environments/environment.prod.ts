@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  baseUrl: "http://trendchristmas.com/api",
-  baseHref: "http://trendchristmas/"
+  baseUrl: "https://trend-christmas.azurewebsites.net/api",
+  baseHref: "https://trend-christmas.azurewebsites.net/"
 };

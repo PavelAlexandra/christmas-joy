@@ -32,7 +32,7 @@ namespace ChristmasJoy.App.Controllers
       _jwtOptions = jwtOptions;
     }
     
-    public async Task<IActionResult> Post([FromBody]LoginViewModel model)
+    public IActionResult Post([FromBody]LoginViewModel model)
     {
       try
       {
