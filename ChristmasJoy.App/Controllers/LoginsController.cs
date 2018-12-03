@@ -38,7 +38,7 @@ namespace ChristmasJoy.App.Controllers
     {
       try
       {
-        var users = _userRepository.GetAllUsers();
+        var users = _userRepository.GetAllNonAdminUsers();
         return Ok(users);
 
       }catch(System.Exception ex)
@@ -65,9 +65,6 @@ namespace ChristmasJoy.App.Controllers
         {
           return BadRequest(Errors.AddErrorToModelState("email", "Email address is already used.", ModelState));
         }
-          
-        model.CustomId = _userRepository.LastCustomId() + 1;
-        model.Id = null;
         model.HashedPassword = _signInService.GetHashedPassword(model.HashedPassword);
 
         await _userRepository.AddUserAsync(model);
@@ -75,10 +72,10 @@ namespace ChristmasJoy.App.Controllers
         var newUser = _userRepository.GetUser(model.Email);
         if(newUser != null)
         {
-         await _santasRepo.AddUserAsync(newUser.CustomId);
+         await _santasRepo.AddUserAsync(newUser.Id);
         }
 
-        return new JsonResult(new { id = newUser.Id, customId = newUser.CustomId});
+        return new JsonResult(new { id = newUser.Id});
       }
       catch (System.Exception ex)
       {

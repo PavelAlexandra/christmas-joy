@@ -97,8 +97,8 @@ namespace ChristmasJoy.App.Controllers
           return BadRequest(Errors.AddErrorToModelState("user_id", $"No user found for id {userId}", ModelState));
         }
 
-        var wishlist = _wishListRepo.GetWishList(user.CustomId);
-        var userStatus = _statusService.GetUserStatus(user.CustomId, user.UserName);
+        var wishlist = _wishListRepo.GetWishList(user.Id);
+        var userStatus = _statusService.GetUserStatus(user.Id, user.UserName);
 
         var userData = new UserData
         {
@@ -125,13 +125,13 @@ namespace ChristmasJoy.App.Controllers
       {
         var usersMap = new Dictionary<int, UserStatus>();
   
-        var users = _userRepo.GetAllUsers();
+        var users = _userRepo.GetAllNonAdminUsers();
         if (users != null)
         {
           foreach (var user in users)
           {
-            var userStatus = _statusService.GetUserStatus(user.CustomId, user.UserName);
-            usersMap.Add(user.CustomId, userStatus);
+            var userStatus = _statusService.GetUserStatus(user.Id, user.UserName);
+            usersMap.Add(user.Id, userStatus);
           }
         }
         return Ok(new { data = usersMap });
@@ -150,11 +150,11 @@ namespace ChristmasJoy.App.Controllers
     {
       try
       {
-        var users = _userRepo.GetAllUsers();
+        var users = _userRepo.GetAllNonAdminUsers();
         var userStatuses = new List<UserStatus>();
         foreach(var user in users)
         {
-          var userStatus = _statusService.GetUserStatus(user.CustomId, user.UserName);
+          var userStatus = _statusService.GetUserStatus(user.Id, user.UserName);
           userStatuses.Add(userStatus);
         }
         userStatuses = userStatuses.OrderByDescending(x => x.Points).ThenBy(x => x.UserName).ToList();

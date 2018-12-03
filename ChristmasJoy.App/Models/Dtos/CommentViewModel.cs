@@ -7,17 +7,14 @@ namespace ChristmasJoy.App.Models.Dtos
     public class CommentViewModel
     {
         [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         [JsonProperty(PropertyName = "fromUserId")]
         public int FromUserId { get; set; }
 
         [JsonProperty(PropertyName = "content")]
         public string Content { get; set; }
-
-        [JsonProperty(PropertyName = "commentType")]
-        public CommentType CommentType { get; set; }
-
+    
         [JsonProperty(PropertyName = "toUserId")]
         public int ToUserId { get; set; }
 
@@ -27,6 +24,10 @@ namespace ChristmasJoy.App.Models.Dtos
         [JsonProperty(PropertyName = "likes")]
         public List<int> Likes { get; set; }
 
+        [JsonProperty(PropertyName = "isAnonymous")]
         public bool IsAnonymous { get; set; }
+
+        [JsonProperty(PropertyName = "isPrivate")]        
+        public bool IsPrivate { get; set; }
     }
 }

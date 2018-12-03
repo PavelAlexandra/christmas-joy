@@ -62,12 +62,11 @@ namespace ChristmasJoy.App.DbRepositories.SqLite
       }
     }
 
-    public async Task SetLikeAsync(int fromUserId, string commentId)
+    public async Task SetLikeAsync(int fromUserId, int commentId)
     {
       using (var db = dbContextFactory.CreateDbContext(_appConfig))
       {
-        var id = Int32.Parse(commentId);
-        var comment = await db.Comments.FindAsync(id);
+        var comment = await db.Comments.FindAsync(commentId);
         if(comment == null)
         {
           throw new KeyNotFoundException($"Comment with id {commentId} was not found.");

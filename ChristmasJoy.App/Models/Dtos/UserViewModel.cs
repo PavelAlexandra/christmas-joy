@@ -4,11 +4,8 @@ namespace ChristmasJoy.App.Models.Dtos
 {
     public class UserViewModel
     {
-        [JsonProperty(PropertyName = "customId")]
-        public int CustomId { get; set; }
-
         [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         [JsonProperty(PropertyName = "email")]
         public string Email { get; set; }

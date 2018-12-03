@@ -9,7 +9,7 @@ namespace ChristmasJoy.App.DbRepositories.Interfaces
     Task<string> AddCommentAsync(CommentViewModel item);
     List<CommentViewModel> GetReceivedComments(int userId);
     List<CommentViewModel> GetSentComments(int fromUserId);
-    Task SetLikeAsync(int fromUserId, string commentId);
+    Task SetLikeAsync(int fromUserId, int commentId);
   }
 
 }

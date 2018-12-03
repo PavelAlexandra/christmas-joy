@@ -39,38 +39,38 @@
         <tbody class="table">
           <tr *ngFor="let user of users; let i = index">
             <td>
-              <span *ngIf="user.customId != editUserId">
-                {{user.customId}}
+              <span *ngIf="user.id != editUserId">
+                {{user.id}}
               </span>
             </td>
             <td class="specifictd">
-              <span class="specifictd" *ngIf="user.customId != editUserId">
+              <span class="specifictd" *ngIf="user.id != editUserId">
                   {{user.userName}}
               </span>
-              <input class="specifictd" *ngIf="user.customId == editUserId" type="text" [(ngModel)]="user.userName" />
+              <input class="specifictd" *ngIf="user.id == editUserId" type="text" [(ngModel)]="user.userName" />
             </td>
             <td class="specifictd">
-                <span class="specifictd" *ngIf="user.customId != editUserId">
+                <span class="specifictd" *ngIf="user.id != editUserId">
                     {{user.email}}
                 </span>
-                <input class="specifictd" *ngIf="user.customId == editUserId" type="text" [(ngModel)]="user.email" />
+                <input class="specifictd" *ngIf="user.id == editUserId" type="text" [(ngModel)]="user.email" />
             </td>
             <td>
-                <span *ngIf="user.customId != 0">
+                <span *ngIf="user.id != 0">
                     ******
                 </span>
-                <input *ngIf="user.customId == 0" type="text" [(ngModel)]="user.hashedPassword" />
+                <input *ngIf="user.id == 0" type="text" [(ngModel)]="user.hashedPassword" />
             </td>
             <td>
               <i class="fa fa-check green" *ngIf="user.secretSantaForId"></i>
               <i class="fa fa-close red" *ngIf="!user.secretSantaForId"></i>
             </td>
             <td>
-              <div *ngIf="user.customId == editUserId" style="display:flex;" class="pull-right">
+              <div *ngIf="user.id == editUserId" style="display:flex;" class="pull-right">
                 <button type="input" class="btn btn-success cmd-btn" (click)="saveUser(user)">Save</button>
                 <button type="input" class="btn btn-danger cmd-btn" (click)="cancelEdit()">Cancel</button>
               </div>
-              <div *ngIf="user.customId != editUserId" class="pull-right">
+              <div *ngIf="user.id != editUserId" class="pull-right">
                   <button type="input" class="btn btn-primary cmd-btn" (click)="editUser(i)" [ngClass]="{disabled : editUserId != null}">
                     Edit
                   </button>

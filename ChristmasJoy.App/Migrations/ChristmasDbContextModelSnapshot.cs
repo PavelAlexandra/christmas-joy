@@ -23,13 +23,13 @@ namespace ChristmasJoy.App.Migrations
 
                     b.Property<DateTime>("CommentDate");
 
-                    b.Property<int>("CommentType");
-
                     b.Property<string>("Content");
 
                     b.Property<int>("FromUserId");
 
                     b.Property<bool>("IsAnonymous");
+
+                    b.Property<bool>("IsPrivate");
 
                     b.Property<int>("ToUserId");
 
@@ -43,15 +43,13 @@ namespace ChristmasJoy.App.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("CommentId");
-
-                    b.Property<int?>("CommentId1");
+                    b.Property<int>("CommentId");
 
                     b.Property<int>("FromUserId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CommentId1");
+                    b.HasIndex("CommentId");
 
                     b.ToTable("Likes");
                 });
@@ -76,8 +74,6 @@ namespace ChristmasJoy.App.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<int>("Age");
-
-                    b.Property<int>("CustomId");
 
                     b.Property<string>("Email");
 
@@ -114,7 +110,8 @@ namespace ChristmasJoy.App.Migrations
                 {
                     b.HasOne("ChristmasJoy.App.Models.SqLiteModels.Comment")
                         .WithMany("Likes")
-                        .HasForeignKey("CommentId1");
+                        .HasForeignKey("CommentId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

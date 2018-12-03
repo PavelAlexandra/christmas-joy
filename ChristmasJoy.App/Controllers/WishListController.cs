@@ -47,7 +47,6 @@ namespace ChristmasJoy.App.Controllers
         {
           return BadRequest(item);
         }
-        item.Id = null;
         var itemId = await _wishListRepo.AddWishItemAsync(item);
         return Ok(new { id = itemId });
       }

@@ -1,9 +1,7 @@
 namespace ChristmasJoy.App.Models.SqLiteModels
 {
     public class User
-    {
-        public int CustomId { get; set; }
-    
+    {    
         public int Id { get; set; }
     
         public string Email { get; set; }

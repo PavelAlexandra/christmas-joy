@@ -7,7 +7,7 @@ namespace ChristmasJoy.App.DbRepositories.Interfaces
 {
   public interface IUserRepository
   {
-    List<UserViewModel> GetAllUsers();
+    List<UserViewModel> GetAllNonAdminUsers();
 
     UserViewModel GetUser(string email);
 

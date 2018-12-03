@@ -46,7 +46,8 @@ namespace ChristmasJoy.App.DbRepositories.SqLite
     {
       using (var db = dbContextFactory.CreateDbContext(_appConfig))
       {
-        var santas = db.SecretSantas.Where(u => u.SantaUserId == null && u.ReceiverUserId != secretSantaId);
+        var santas = db.SecretSantas
+          .Where(u => u.SantaUserId == null && u.ReceiverUserId != secretSantaId);
         return santas
           .Select(s => _mapper.Map<SecretSanta, SecretSantaViewModel>(s))
           .ToList();
@@ -76,7 +77,7 @@ namespace ChristmasJoy.App.DbRepositories.SqLite
         {
           receiver.SantaUserId = santaUserId;
 
-          santaUser.SecretSantaForId = receiverUser.CustomId;
+          santaUser.SecretSantaForId = receiverUser.Id;
           santaUser.SecretSantaFor = receiverUser.UserName;
           await db.SaveChangesAsync();
 

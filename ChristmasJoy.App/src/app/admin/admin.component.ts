@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+
 import { User } from '../models/User';
 import { UsersService } from '../services/users.service';
 
@@ -15,15 +16,15 @@ export class AdminComponent implements OnInit {
   editUserId: number = null;
   oldUser: User;
 
-  constructor(private usersService: UsersService) 
-  { 
+  constructor(private usersService: UsersService)
+  {
     this.errorMessage = "";
   }
 
   ngOnInit(){
     this.usersService
         .getAllUsers()
-        .subscribe((data: User[]) => 
+        .subscribe((data: User[]) =>
         {
           this.users = data;
         },
@@ -39,14 +40,14 @@ export class AdminComponent implements OnInit {
 
     let editUser = new User();
     editUser.age = Math.floor(Math.random()*(200-100+1)+100);
-    editUser.customId = 0;
+    editUser.id = 0;
     editUser.isAdmin = false;
     editUser.secretSantaForId = null;
     this.editUserId = 0;
     this.users.unshift(editUser);
   }
 
-  cancelEdit() {   
+  cancelEdit() {
     if(this.editUserId == 0){
       this.users.shift();
       this.editUserId = null;
@@ -54,7 +55,7 @@ export class AdminComponent implements OnInit {
     }
 
     for(let user of this.users){
-      if(user.customId == this.editUserId){
+      if(user.id == this.editUserId){
         user.email = this.oldUser.email;
         user.userName = this.oldUser.userName;
         this.editUserId = null;
@@ -63,24 +64,23 @@ export class AdminComponent implements OnInit {
     }
   }
 
-  editUser(index){
-    if(this.users[index]){
+  editUser(index) {
+    if (this.users[index]) {
       this.oldUser = new User();
       this.oldUser.email =  this.users[index].email;
       this.oldUser.userName = this.users[index].userName;
-      this.editUserId = this.users[index].customId;
+      this.editUserId = this.users[index].id;
     }
   }
 
-  saveUser(user){
+  saveUser(user) {
     this.errorMessage = "";
     this.alertMessage = "";
 
     this.usersService.saveUser(user).subscribe(
       response => {
-        if(response && response.id && response.customId){
+        if (response && response.id) {
           user.id = response.id;
-          user.customId = response.customId;
         }
         this.editUserId = null;
         this.alertMessage = "User changes were successfully saved.";

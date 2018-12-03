@@ -34,7 +34,6 @@ namespace ChristmasJoy.App.Controllers
         {
           return BadRequest(item);
         }
-        item.Id = null;
         item.CommentDate = DateTime.UtcNow;
         var itemId = await _commRepo.AddCommentAsync(item);
         var user = _userRepo.GetUser(item.FromUserId);

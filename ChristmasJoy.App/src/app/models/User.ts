@@ -1,6 +1,5 @@
 export class User {
-    customId: number;
-    id: string;
+    id: number;
     email: string;
     userName: string;
     isAdmin: boolean;

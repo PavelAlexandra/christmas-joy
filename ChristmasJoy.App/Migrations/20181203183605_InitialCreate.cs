@@ -15,10 +15,10 @@ namespace ChristmasJoy.App.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     FromUserId = table.Column<int>(nullable: false),
                     Content = table.Column<string>(nullable: true),
-                    CommentType = table.Column<int>(nullable: false),
                     ToUserId = table.Column<int>(nullable: false),
                     CommentDate = table.Column<DateTime>(nullable: false),
-                    IsAnonymous = table.Column<bool>(nullable: false)
+                    IsAnonymous = table.Column<bool>(nullable: false),
+                    IsPrivate = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -43,7 +43,6 @@ namespace ChristmasJoy.App.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    CustomId = table.Column<int>(nullable: false),
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Email = table.Column<string>(nullable: true),
@@ -80,24 +79,23 @@ namespace ChristmasJoy.App.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     FromUserId = table.Column<int>(nullable: false),
-                    CommentId = table.Column<string>(nullable: true),
-                    CommentId1 = table.Column<int>(nullable: true)
+                    CommentId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Likes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Likes_Comments_CommentId1",
-                        column: x => x.CommentId1,
+                        name: "FK_Likes_Comments_CommentId",
+                        column: x => x.CommentId,
                         principalTable: "Comments",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Likes_CommentId1",
+                name: "IX_Likes_CommentId",
                 table: "Likes",
-                column: "CommentId1");
+                column: "CommentId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

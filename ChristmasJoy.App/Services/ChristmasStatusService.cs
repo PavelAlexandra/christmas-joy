@@ -22,12 +22,12 @@ namespace ChristmasJoy.App.Services
     };
 
     public const double CommentReceivedPoints = 0.3;
-    public const double CommentPositiveSentPoints = 1;
-    public const double CommentNegativeSentPoints = 0.2;
+    public const double CommentPublicSentPoints = 1;
+    public const double CommentPrivateSentPoints = 0.2;
     public const double CommentLikeReceived = 0.3;
 
-    public const int MaxPos = 45;
-    public const int MaxNeg = 10;
+    public const int MaxPublic = 45;
+    public const int MaxPrivate = 10;
 
     private readonly ICommentsRepository _commRepo;
 
@@ -43,8 +43,8 @@ namespace ChristmasJoy.App.Services
 
       double receivedCommentsPoints = 0;
       double commentLikesPoints = 0;
-      double sentPosCommentsPoints = 0;
-      double sentNegativeCommentsPoints = 0;
+      double sentPublicCommentsPoints = 0;
+      double sentPrivateCommentsPoints = 0;
 
       if (receivedComments != null)
       {
@@ -58,25 +58,25 @@ namespace ChristmasJoy.App.Services
 
       if (sentComments != null)
       {
-        var sentPosCommNo = sentComments
-                          .Where(x => x.CommentType == CommentType.Positive)
+        var sentPublicCommNo = sentComments
+                          .Where(x => !x.IsPrivate)
                           .GroupBy(x => x.ToUserId)
                           .SelectMany(x => x.Take(2))
                           .Count();
 
 
-        var sentNegCommNo = sentComments
-                          .Where(x => x.CommentType == CommentType.Negative)
+        var sentPrivateCommNo = sentComments
+                          .Where(x => x.IsPrivate)
                           .GroupBy(x => x.ToUserId)
                           .SelectMany(x => x.Take(2))
                           .Count();
 
-        sentPosCommentsPoints = (sentPosCommNo > MaxPos ? MaxPos : sentPosCommNo) * CommentPositiveSentPoints;
-        sentNegativeCommentsPoints = (sentNegCommNo > MaxNeg? MaxNeg : sentNegCommNo ) * CommentNegativeSentPoints;
+        sentPublicCommentsPoints = (sentPublicCommNo > MaxPublic ? MaxPublic : sentPublicCommNo) * CommentPublicSentPoints;
+        sentPrivateCommentsPoints = (sentPrivateCommNo > MaxPrivate ? MaxPrivate : sentPrivateCommNo ) * CommentPrivateSentPoints;
       }   
 
-      var totalPoints = sentPosCommentsPoints +
-                sentNegativeCommentsPoints +
+      var totalPoints = sentPublicCommentsPoints +
+                sentPrivateCommentsPoints +
                 receivedCommentsPoints +
                 commentLikesPoints;
 

@@ -6,6 +6,6 @@ namespace ChristmasJoy.App.Models.SqLiteModels
 
         public int FromUserId { get; set; }
 
-        public string CommentId { get; set; }
+        public int CommentId { get; set; }
     }
 }

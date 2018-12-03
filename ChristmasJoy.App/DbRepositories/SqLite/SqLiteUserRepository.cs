@@ -52,11 +52,11 @@ namespace ChristmasJoy.App.DbRepositories.SqLite
       }
     }
 
-    public List<UserViewModel> GetAllUsers()
+    public List<UserViewModel> GetAllNonAdminUsers()
     {
       using (var db = dbContextFactory.CreateDbContext(_appConfig))
       {
-        return db.Users.Select(user => _mapper.Map<User, UserViewModel>(user)).ToList();
+        return db.Users.Where(u => !u.IsAdmin).Select(user => _mapper.Map<User, UserViewModel>(user)).ToList();
       }
     }
 
@@ -74,14 +74,14 @@ namespace ChristmasJoy.App.DbRepositories.SqLite
       }
     }
 
-    public UserViewModel GetUser(int customId)
+    public UserViewModel GetUser(int id)
     {
       using (var db = dbContextFactory.CreateDbContext(_appConfig))
       {
-        var user = db.Users.Where(u => u.CustomId == customId).FirstOrDefault();
+        var user = db.Users.Where(u => u.Id == id).FirstOrDefault();
         if (user == null)
         {
-          throw new KeyNotFoundException($"User with id '{customId}' was not found.");
+          throw new KeyNotFoundException($"User with id '{id}' was not found.");
         }
 
         return _mapper.Map<User, UserViewModel>(user);
@@ -92,7 +92,7 @@ namespace ChristmasJoy.App.DbRepositories.SqLite
     {
       using (var db = dbContextFactory.CreateDbContext(_appConfig))
       {
-        var maxId = db.Users.Max(u => u.CustomId);
+        var maxId = db.Users.Max(u => u.Id);
         return maxId;
       }
     }

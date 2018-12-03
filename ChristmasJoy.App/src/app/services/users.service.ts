@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { Http, Response, Headers, RequestOptions } from '@angular/http';
-import { ConfigService } from './config.service';
-import { BaseService } from './base.service';
-import { LoggedInUser } from '../models/LoggedInUser';
-
 import { BehaviorSubject, Observable } from 'rxjs/Rx';
+import { Headers, Http, RequestOptions, Response } from '@angular/http';
+
+import { BaseService } from './base.service';
+import { ConfigService } from './config.service';
+import { Injectable } from '@angular/core';
+import { LoggedInUser } from '../models/LoggedInUser';
 import { User } from '../models/User';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class UsersService extends BaseService {
     this.baseUrl = configService.getApiURI();
     let headers = configService.getHeaders();
     let authToken = localStorage.getItem('auth_token');
-    
+
     if(authToken){
         headers.append('Authorization', `Bearer ${authToken}`);
     }
@@ -31,7 +31,7 @@ export class UsersService extends BaseService {
   }
 
   saveUser(user: User): Observable<any>{
-      if(user.customId == 0){
+      if(user.id == 0){
         return this.http.post(this.baseUrl + "/logins/AddUser/", user, this.requestOptions)
         .map(response => response.json())
         .catch(this.handleError);

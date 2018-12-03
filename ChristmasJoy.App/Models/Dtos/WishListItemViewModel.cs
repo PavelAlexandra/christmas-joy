@@ -5,7 +5,7 @@ namespace ChristmasJoy.App.Models.Dtos
     public class WishListItemViewModel
     {
         [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         [JsonProperty(PropertyName = "userId")]
         public int UserId { get; set; }

@@ -74,7 +74,7 @@ namespace ChristmasJoy.App.Controllers
           expires_in = (int)_jwtOptions.ValidFor.TotalSeconds,
           admin = user.IsAdmin,
           username = user.UserName,
-          id = user.CustomId
+          id = user.Id
         };
 
         var json = JsonConvert.SerializeObject(response);

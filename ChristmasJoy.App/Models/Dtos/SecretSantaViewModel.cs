@@ -5,7 +5,7 @@ namespace ChristmasJoy.App.Models.Dtos
     public class SecretSantaViewModel
     {
         [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         [JsonProperty(PropertyName = "receiverUserId")]
         public int ReceiverUserId { get; set; }

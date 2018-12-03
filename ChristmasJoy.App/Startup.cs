@@ -1,5 +1,4 @@
 using AutoMapper;
-using ChristmasJoy.App.DbRepositories.DocumentDb;
 using ChristmasJoy.App.DbRepositories.Interfaces;
 using ChristmasJoy.App.DbRepositories.SqLite;
 using ChristmasJoy.App.Helpers;
@@ -163,23 +162,11 @@ namespace ChristmasJoy.App
 
         private void ConfigureDatabaseRepositories(IAppConfiguration appConfig, IServiceCollection services)
         {
-            if (!string.IsNullOrEmpty(appConfig.DocumentDBEndpointUrl))
-            {
-              services.AddScoped<IUserRepository, UserRepository>();
-              services.AddScoped<IWishListRepository, WishListRepository>();
-              services.AddScoped<ISecretSantasRepository, SecretSantasRepository>();
-              services.AddScoped<ICommentsRepository, CommentsRepository>();
-            }
-            else
-            {
-        // Database
-        // services.AddDbContext<ChristmasDbContext>(options => options.UseSqlServer(appConfig.SqLiteConnectionString));
-              services.AddScoped<ChristmasDbContextFactory, ChristmasDbContextFactory>();
-              services.AddScoped<IUserRepository, SqLiteUserRepository>();
-              services.AddScoped<IWishListRepository, SqLiteWishListRepository>();
-              services.AddScoped<ISecretSantasRepository, SqLiteSecretSantasRepository>();
-              services.AddScoped<ICommentsRepository, SqlLiteCommentsRepository>();
-            }
+            services.AddScoped<ChristmasDbContextFactory, ChristmasDbContextFactory>();
+            services.AddScoped<IUserRepository, SqLiteUserRepository>();
+            services.AddScoped<IWishListRepository, SqLiteWishListRepository>();
+            services.AddScoped<ISecretSantasRepository, SqLiteSecretSantasRepository>();
+            services.AddScoped<ICommentsRepository, SqlLiteCommentsRepository>();
         }
   }
 }
