@@ -7,6 +7,7 @@ using AutoMapper;
 using ChristmasJoy.App.Models.SqLiteModels;
 using System.Linq;
 using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace ChristmasJoy.App.DbRepositories.SqLite
 {
@@ -38,27 +39,45 @@ namespace ChristmasJoy.App.DbRepositories.SqLite
       } 
     }
 
-    public List<CommentViewModel> GetReceivedComments(int userId)
+    public async Task<List<CommentViewModel>> GetReceivedCommentsAsync(int userId)
     {
       using (var db = dbContextFactory.CreateDbContext(_appConfig))
       {
-        var comments = db.Comments.Where(c => c.ToUserId == userId)
-          .Select(c => _mapper.Map<CommentViewModel>(c))
-          .ToList();
+        var comments = await db.Comments
+          .Include(cmd => cmd.Likes)
+          .Where(cmd => cmd.ToUserId == userId)
+          .ToListAsync();
 
-        return comments;
+        var data = new List<CommentViewModel>();
+        foreach (var cmd in comments)
+        {
+          var command = _mapper.Map<Comment, CommentViewModel>(cmd);
+          command.Likes = cmd.Likes.Select(l => l.FromUserId).ToList();
+          data.Add(command);
+        }
+
+        return data;
       }
     }
 
-    public List<CommentViewModel> GetSentComments(int fromUserId)
+    public async Task<List<CommentViewModel>> GetSentCommentsAsync(int fromUserId)
     {
       using (var db = dbContextFactory.CreateDbContext(_appConfig))
       {
-        var comments = db.Comments.Where(c => c.FromUserId == fromUserId)
-          .Select(c => _mapper.Map<CommentViewModel>(c))
-          .ToList();
+        var comments = await db.Comments
+          .Include(cmd => cmd.Likes)
+          .Where(cmd => cmd.FromUserId == fromUserId)
+          .ToListAsync();
 
-        return comments;
+        var data = new List<CommentViewModel>();
+        foreach(var cmd in comments)
+        {
+          var command = _mapper.Map<Comment, CommentViewModel>(cmd);
+          command.Likes = cmd.Likes.Select(l => l.FromUserId).ToList();
+          data.Add(command);
+        }
+
+        return data;
       }
     }
 
@@ -66,7 +85,11 @@ namespace ChristmasJoy.App.DbRepositories.SqLite
     {
       using (var db = dbContextFactory.CreateDbContext(_appConfig))
       {
-        var comment = await db.Comments.FindAsync(commentId);
+        var comment = await db.Comments
+          .Include(cmd => cmd.Likes)
+          .Where(cmd => cmd.Id == commentId)
+          .FirstOrDefaultAsync();
+
         if(comment == null)
         {
           throw new KeyNotFoundException($"Comment with id {commentId} was not found.");

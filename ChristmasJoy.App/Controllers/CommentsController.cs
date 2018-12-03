@@ -57,11 +57,12 @@ namespace ChristmasJoy.App.Controllers
     }
 
     [HttpGet("all/{userId}")]
-    public IActionResult GetComments(int userId)
+    public async Task<IActionResult> GetComments(int userId)
     {
       try
       {
-        var comments = _commRepo.GetReceivedComments(userId).OrderByDescending(x => x.CommentDate).ToList();
+        var results = await _commRepo.GetReceivedCommentsAsync(userId);
+        var comments = results.OrderByDescending(x => x.CommentDate).ToList();
 
         return Ok(new { data = comments });
       }

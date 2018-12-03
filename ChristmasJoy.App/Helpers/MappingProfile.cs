@@ -12,8 +12,10 @@ namespace ChristmasJoy.App.Helpers
       CreateMap<User, UserViewModel>();
       CreateMap<UserViewModel, User>();
 
-      CreateMap<Comment, CommentViewModel>();
-      CreateMap<CommentViewModel, Comment>();
+      CreateMap<Comment, CommentViewModel>()
+        .ForMember(u => u.Likes, options => options.Ignore());
+      CreateMap<CommentViewModel, Comment>()
+        .ForMember(u => u.Likes, options => options.Ignore());
 
       CreateMap<WishListItem, WishListItemViewModel>();
       CreateMap<WishListItemViewModel, WishListItem>();

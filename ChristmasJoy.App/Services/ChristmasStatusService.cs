@@ -2,12 +2,13 @@ using ChristmasJoy.App.DbRepositories.Interfaces;
 using ChristmasJoy.App.Models;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ChristmasJoy.App.Services
 {
   public interface IChristmasStatusService
   {
-    UserStatus GetUserStatus(int customUserId, string userName);
+    Task<UserStatus> GetUserStatusAsync(int customUserId, string userName);
   }
 
   public class ChristmasStatusService: IChristmasStatusService
@@ -36,10 +37,10 @@ namespace ChristmasJoy.App.Services
       this._commRepo = commRepo;
     }
 
-    public UserStatus GetUserStatus(int customUserId, string userName)
+    public async Task<UserStatus> GetUserStatusAsync(int customUserId, string userName)
     {
-      var receivedComments = _commRepo.GetReceivedComments(customUserId);
-      var sentComments = _commRepo.GetSentComments(customUserId);
+      var receivedComments = await _commRepo.GetReceivedCommentsAsync(customUserId);
+      var sentComments = await _commRepo.GetSentCommentsAsync(customUserId);
 
       double receivedCommentsPoints = 0;
       double commentLikesPoints = 0;

@@ -87,7 +87,7 @@ namespace ChristmasJoy.App.Controllers
     }
 
     [HttpGet("getUserData/{userId}")]
-    public IActionResult GetUserData(int userId)
+    public async Task<IActionResult> GetUserData(int userId)
     {
       try
       {
@@ -98,7 +98,7 @@ namespace ChristmasJoy.App.Controllers
         }
 
         var wishlist = _wishListRepo.GetWishList(user.Id);
-        var userStatus = _statusService.GetUserStatus(user.Id, user.UserName);
+        var userStatus = await _statusService.GetUserStatusAsync(user.Id, user.UserName);
 
         var userData = new UserData
         {
@@ -119,7 +119,7 @@ namespace ChristmasJoy.App.Controllers
     }
 
     [HttpGet("getMap")]
-    public IActionResult GetUsersMap()
+    public async Task<IActionResult> GetUsersMap()
     {
       try
       {
@@ -130,7 +130,7 @@ namespace ChristmasJoy.App.Controllers
         {
           foreach (var user in users)
           {
-            var userStatus = _statusService.GetUserStatus(user.Id, user.UserName);
+            var userStatus = await _statusService.GetUserStatusAsync(user.Id, user.UserName);
             usersMap.Add(user.Id, userStatus);
           }
         }
@@ -146,7 +146,7 @@ namespace ChristmasJoy.App.Controllers
     }
 
     [HttpGet("getStatuses")]
-    public IActionResult GetUserStatuses()
+    public async Task<IActionResult> GetUserStatuses()
     {
       try
       {
@@ -154,7 +154,7 @@ namespace ChristmasJoy.App.Controllers
         var userStatuses = new List<UserStatus>();
         foreach(var user in users)
         {
-          var userStatus = _statusService.GetUserStatus(user.Id, user.UserName);
+          var userStatus = await _statusService.GetUserStatusAsync(user.Id, user.UserName);
           userStatuses.Add(userStatus);
         }
         userStatuses = userStatuses.OrderByDescending(x => x.Points).ThenBy(x => x.UserName).ToList();
