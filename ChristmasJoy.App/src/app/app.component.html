@@ -18,9 +18,9 @@
           <li class="active" *ngIf="isLoggedIn">
             <a [routerLink]="['/dashboard']" (click)="closeMenu()"><i class="fa fa-home"></i> Home</a>
           </li>
-          <li *ngIf="isLoggedIn">
+          <li *ngIf="isLoggedIn && !isAdmin">
             <a [routerLink]="['/profile', userId]" (click)="closeMenu()"><i class="fa fa-user"></i> Profile</a>
-            
+
           </li>
           <li *ngIf="isAdmin && isLoggedIn">
             <a  [routerLink]="['/admin']" (click)="closeMenu()">

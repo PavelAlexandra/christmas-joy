@@ -20,6 +20,7 @@ export class FeedbackComponent implements OnInit, OnDestroy {
     public usersStatusMap: any;
     public isPersonal: boolean = false;
     public errorMessage: string = '';
+    public successMessage: string = '';
     public loadingComments: boolean = false;
     public loadingStatuses: boolean = false;
     public mySentComments: number = 0;
@@ -51,21 +52,16 @@ export class FeedbackComponent implements OnInit, OnDestroy {
      .subscribe(
        response => {
          if (response && response.data) {
-           for (let comm of response.data){
-            if (comm.fromUserId === this.currentUserId) {
-              this.mySentComments++;
-            }
-            if (!this.isPersonal) {
-              this.userComments = [];
-              for (let comm of response.data){
-                if (comm.commentType === 1 || (comm.commentType === 0 && comm.fromUserId === this.currentUserId)) {
-                  this.userComments.push(comm);
-                }
+            this.userComments = [];
+            for (let comm of response.data){
+              if (comm.fromUserId === this.currentUserId) {
+                this.mySentComments++;
               }
-            }else {
-              this.userComments = response.data;
+
+              if (!comm.isPrivate || (comm.isPrivate && comm.toUserId === this.currentUserId)) {
+                this.userComments.push(comm);
+              }
             }
-          }
          }
          this.loadingComments = false;
        },
@@ -82,6 +78,7 @@ export class FeedbackComponent implements OnInit, OnDestroy {
     this.newComment.fromUserId = this.currentUserId;
     this.newComment.likes = [];
     this.newComment.toUserId = this.userId;
+    this.successMessage = '';
    }
 
    cancelCommentEdit() {
@@ -164,7 +161,11 @@ export class FeedbackComponent implements OnInit, OnDestroy {
           if (!this.userComments) {
             this.userComments = [];
           }
-          this.userComments.unshift(this.newComment);
+          if (!this.newComment.isPrivate) {
+            this.userComments.unshift(this.newComment);
+          } else {
+            this.successMessage = "Your private message was sent succesfuly.";
+          }
           this.newComment = null;
           this.mySentComments++;
           this.isSavingComment = false;
