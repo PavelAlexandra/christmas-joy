@@ -1,35 +1,36 @@
 using ChristmasJoy.App.DbRepositories.Interfaces;
 using ChristmasJoy.App.Helpers;
-using ChristmasJoy.App.Models;
-using ChristmasJoy.App.Models.Dtos;
 using ChristmasJoy.App.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.IO;
 using System.Threading.Tasks;
+using UserViewModel = ChristmasJoy.App.Models.Dtos.UserViewModel;
 
 namespace ChristmasJoy.App.Controllers
 {
   [Route("api/[controller]")]
-    [Authorize(Roles = "Admin")] //Constants.Generic
-    [EnableCors("MyPolicy")]
-    public class LoginsController : Controller
-    {
-    private readonly IAppConfiguration _configuration;
+  [Authorize(Roles = "Admin")] //Constants.Generic
+  [EnableCors("MyPolicy")]
+  public class LoginsController : Controller
+  {
     private readonly IUserRepository _userRepository;
     private readonly ISignInService _signInService;
     private readonly ISecretSantasRepository _santasRepo;
+    private readonly IUserService _userService;
 
-    public LoginsController(IAppConfiguration appConfiguration,
+    public LoginsController(
       IUserRepository userRepository,
       ISignInService signInService,
-      ISecretSantasRepository santasRepository
-      )
+      ISecretSantasRepository santasRepository,
+      IUserService userService)
     {
-      _configuration = appConfiguration;
       _userRepository = userRepository;
       _signInService = signInService;
       _santasRepo = santasRepository;
+      _userService = userService;
     }
 
     // GET: api/users
@@ -41,7 +42,8 @@ namespace ChristmasJoy.App.Controllers
         var users = _userRepository.GetAllNonAdminUsers();
         return Ok(users);
 
-      }catch(System.Exception ex)
+      }
+      catch (System.Exception ex)
       {
         var result = Newtonsoft.Json.JsonConvert.SerializeObject(new { error = ex.Message });
         Response.ContentType = "application/json";
@@ -61,7 +63,7 @@ namespace ChristmasJoy.App.Controllers
         }
 
         var existingUser = _userRepository.GetUser(model.Email);
-        if(existingUser != null)
+        if (existingUser != null)
         {
           return BadRequest(Errors.AddErrorToModelState("email", "Email address is already used.", ModelState));
         }
@@ -70,12 +72,12 @@ namespace ChristmasJoy.App.Controllers
         await _userRepository.AddUserAsync(model);
 
         var newUser = _userRepository.GetUser(model.Email);
-        if(newUser != null)
+        if (newUser != null)
         {
-         await _santasRepo.AddUserAsync(newUser.Id);
+          await _santasRepo.AddUserAsync(newUser.Id);
         }
 
-        return new JsonResult(new { id = newUser.Id});
+        return new JsonResult(new { id = newUser.Id });
       }
       catch (System.Exception ex)
       {
@@ -122,6 +124,28 @@ namespace ChristmasJoy.App.Controllers
         return Ok();
       }
       catch (System.Exception ex)
+      {
+        var result = Newtonsoft.Json.JsonConvert.SerializeObject(new { error = ex.Message });
+        Response.ContentType = "application/json";
+        Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
+        return new JsonResult(result);
+      }
+    }
+
+    [HttpPost("UploadUsers")]
+    public async Task<IActionResult> UploadUsers()
+    {
+      try
+      {
+        var file = Request.Form.Files[0];
+        var password = Request.Form["password"];
+        using (var reader = new StreamReader(file.OpenReadStream()))
+        {
+          var result = await _userService.UploadUsersFromCsvAsync(reader, password);
+          return new JsonResult(new { userCount = result });
+        }
+      }
+      catch (Exception ex)
       {
         var result = Newtonsoft.Json.JsonConvert.SerializeObject(new { error = ex.Message });
         Response.ContentType = "application/json";

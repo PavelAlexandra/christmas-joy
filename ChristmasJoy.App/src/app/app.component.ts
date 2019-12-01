@@ -19,6 +19,7 @@ export class AppComponent implements OnInit, OnDestroy {
   userSubscription: Subscription;
   isAdmin: boolean = false;
   isMenuOpen: boolean = false;
+  isAdminMenuOpen: boolean = false;
 
   constructor(private authService: AuthService,
     private router: Router) { }
@@ -44,6 +45,18 @@ export class AppComponent implements OnInit, OnDestroy {
   }
   closeMenu(){
     this.isMenuOpen = false;
+    this.isAdminMenuOpen = false;
+  }
+
+  toggleAdminMenu($event){
+    if($event.handled === false) return
+    $event.stopPropagation();
+    $event.preventDefault();
+    this.isAdminMenuOpen = !this.isAdminMenuOpen;
+    $event.handled = true;
+  }
+  closeAdminMenu(){
+    this.isAdminMenuOpen = false;
   }
 
   ngOnDestroy(){

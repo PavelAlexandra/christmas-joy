@@ -18,8 +18,8 @@ export class DashboardComponent implements OnInit, OnDestroy{
   public goodUsers: UserData[];
   public errorMessage: string;
   public isLoading: boolean = false;
-  public secretSantaDate: string = "December 14, 2018 20:00:00";
-  public christmasDate: string = "December 25, 2018 00:00:00";
+  public secretSantaDate: string = "December 15, 2019 19:00:00";
+  public christmasDate: string = "December 25, 2019 00:00:00";
 
   constructor(private authSrv: AuthService,
   private userSrv: UsersService) { }

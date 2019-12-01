@@ -9,6 +9,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { ProfileComponent } from './profile/profile.component';
 import { AuthService } from './services/auth.service';
 import { ConfigService } from './services/config.service';
+import { ImportComponent } from './admin/import/import.component';
 
 const appRoutes: Routes = [
     { path: '', 
@@ -24,6 +25,14 @@ const appRoutes: Routes = [
     {
       path: 'admin',
       component: AdminComponent,
+      canActivate: [AuthGuard],
+      data: {
+        expectedRole: 'Admin'
+      },
+    },
+    {
+      path: 'import',
+      component: ImportComponent,
       canActivate: [AuthGuard],
       data: {
         expectedRole: 'Admin'

@@ -90,10 +90,11 @@ namespace ChristmasJoy.App
 
             services.AddScoped<ISignInService, SignInService>();
             services.AddScoped<IChristmasStatusService, ChristmasStatusService>();
-            
+
             services.AddScoped<IIdentityResolver, IdentityResolver>();
             services.AddScoped<IDocumentHelper, DocumentHelper>();
             ConfigureDatabaseRepositories(appConfig, services);
+            services.AddScoped<IUserService, UserService>();
       #endregion
 
       #region EnableCord

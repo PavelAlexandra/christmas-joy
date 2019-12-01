@@ -13,6 +13,7 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { AdminComponent } from './admin/admin.component';
 import { DashboardComponent } from './dashboard//dashboard.component';
+import { ImportComponent } from './admin/import/import.component';
 import { ProfileComponent } from './profile/profile.component';
 import { AuthService } from './services/auth.service';
 import { ConfigService } from './services/config.service';
@@ -28,6 +29,7 @@ import { CountdownComponent } from './components/countdown.component';
     AdminComponent,
     LoginComponent,
     DashboardComponent,
+    ImportComponent,
     ProfileComponent,
     FeedbackComponent,
     CountdownComponent

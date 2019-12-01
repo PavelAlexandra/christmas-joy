@@ -22,10 +22,13 @@
             <a [routerLink]="['/profile', userId]" (click)="closeMenu()"><i class="fa fa-user"></i> Profile</a>
 
           </li>
-          <li *ngIf="isAdmin && isLoggedIn">
-            <a  [routerLink]="['/admin']" (click)="closeMenu()">
+          <li *ngIf="isAdmin && isLoggedIn" [ngClass]="{'dropdown-menu in': isAdminMenuOpen}"
+            (click)="toggleAdminMenu($event)" (touchstart)="toggleAdminMenu($event)">
+            <a [routerLink]="['/admin']" (click)="closeAdminMenu()">
               <i class="fa fa-gears"></i> Admin
-            </a>
+            </a>   
+            <a [routerLink]="['/admin']" *ngIf="isAdminMenuOpen">Manage users</a>
+            <a [routerLink]="['/import']" *ngIf="isAdminMenuOpen">Import users</a>
           </li>
           <li *ngIf="isLoggedIn">
             <a (click)="logout()" (click)="closeMenu()">

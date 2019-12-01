@@ -11,17 +11,23 @@ import { User } from '../models/User';
 export class UsersService extends BaseService {
   private baseUrl: string;
   private requestOptions: RequestOptions;
+  private uploadRequestOptions: RequestOptions;
 
   constructor(private http: Http, private configService: ConfigService) {
     super();
     this.baseUrl = configService.getApiURI();
     let headers = configService.getHeaders();
     let authToken = localStorage.getItem('auth_token');
+    let uploadHeaders = new Headers();
+   // uploadHeaders.append('Content-Type',' "multipart/form-data; boundary');
+    uploadHeaders.append('Access-Control-Allow-Origin', '*');
 
     if(authToken){
         headers.append('Authorization', `Bearer ${authToken}`);
+        uploadHeaders.append('Authorization', `Bearer ${authToken}`);
     }
     this.requestOptions = new RequestOptions({headers: headers});
+    this.uploadRequestOptions = new RequestOptions({headers: uploadHeaders});
   }
 
   getAllUsers(): Observable<User[]>{
@@ -63,5 +69,16 @@ export class UsersService extends BaseService {
     return this.http.get(this.baseUrl + "/users/getStatuses/", this.requestOptions)
     .map(response => response.json())
     .catch(this.handleError);
+  }
+
+  uploadFile(file: File, password: string): Observable<any>{
+    const formData: FormData = new FormData();
+    formData.append('password', password);
+    formData.append('file', file, file.name);   
+  
+    return this.http.post(this.baseUrl + "/logins/UploadUsers/",formData, this.uploadRequestOptions)
+    .map(response => response.json())
+    .catch(this.handleError);
+
   }
 }
