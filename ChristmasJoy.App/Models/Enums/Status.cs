@@ -4,8 +4,8 @@ namespace ChristmasJoy.App.Models
   {
     Grinch = 0,
     Snowman = 1,
-    Elf = 2,
-    Cookie = 3,
+    Reindeer = 2,
+    Penguin = 3,
     Santa = 4,
     Magus = 5
   }

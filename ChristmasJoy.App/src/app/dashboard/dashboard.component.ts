@@ -18,8 +18,8 @@ export class DashboardComponent implements OnInit, OnDestroy{
   public goodUsers: UserData[];
   public errorMessage: string;
   public isLoading: boolean = false;
-  public secretSantaDate: string = "December 15, 2019 19:00:00";
-  public christmasDate: string = "December 25, 2019 00:00:00";
+  public secretSantaDate: string = "December 18, 2021 19:00:00";
+  public christmasDate: string = "December 25, 2021 00:00:00";
 
   constructor(private authSrv: AuthService,
   private userSrv: UsersService) { }
@@ -39,7 +39,7 @@ export class DashboardComponent implements OnInit, OnDestroy{
   }
 
   getStatusImg(user: UserStatus){
-    return '/assets/images/'+user.christmasStatus + '.jpg';
+    return '/assets/images/updated/'+user.christmasStatus + '.jpg';
   }
 
   isPassedSecretSanta(){

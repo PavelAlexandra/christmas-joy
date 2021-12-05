@@ -15,9 +15,9 @@ namespace ChristmasJoy.App.Services
   {
     public Dictionary<int, Status> statusLevels = new Dictionary<int, Status>
     {
-      {3, Status.Cookie },
+      {3, Status.Penguin },
       {10, Status.Snowman },
-      {25, Status.Elf },
+      {25, Status.Reindeer },
       {50, Status.Santa },
       {67, Status.Magus }
     };

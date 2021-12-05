@@ -29,6 +29,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   public nextStatus: string = null;
   public isSavingWishList: boolean = false;
   public isLoadingUser: boolean = false;
+  public isFeedbackOpen: boolean = true;
 
   constructor(private authSrv: AuthService,
     private usersSrv: UsersService,
@@ -65,6 +66,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   isSelfProfile(){
     return this.currentUserId == this.userId && this.userData;
+  }
+
+  openFeedback(){
+    this.isFeedbackOpen = true;
+  }
+
+  openWishlist(){
+    this.isFeedbackOpen = false;
   }
 
   getUserData(){

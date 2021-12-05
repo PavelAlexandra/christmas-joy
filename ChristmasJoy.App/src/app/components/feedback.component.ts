@@ -103,7 +103,7 @@ export class FeedbackComponent implements OnInit, OnDestroy {
    }
 
    getUserStatus(comment: Comment) {
-     return '/assets/images/' + this.usersStatusMap[comment.fromUserId].christmasStatus + '.jpg';
+     return '/assets/images/updated/' + this.usersStatusMap[comment.fromUserId].christmasStatus + '.jpg';
    }
 
    ngOnDestroy() {
