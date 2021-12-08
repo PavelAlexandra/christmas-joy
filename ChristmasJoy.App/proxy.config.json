@@ -1,6 +1,6 @@
 {
   "/api": {
-    "target": "http://localhost:52929",
+    "target": "https://trend-christmas.azurewebsites.net/",
     "secure":  false
   }
 }

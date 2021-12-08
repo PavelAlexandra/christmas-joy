@@ -99,7 +99,6 @@ namespace ChristmasJoy.App.DbRepositories.SqLite
 
     public async Task UpdateUserAsync(UserViewModel item)
     {
-      var dbUser = _mapper.Map<UserViewModel, User>(item);
       using (var db = dbContextFactory.CreateDbContext(_appConfig))
       {
         var user = await db.Users.FindAsync(item.Id);
@@ -107,7 +106,20 @@ namespace ChristmasJoy.App.DbRepositories.SqLite
         {
           throw new KeyNotFoundException($"User with id '{item.Id}' was not found.");
         }
-        user = dbUser;
+        user.UserName = item.UserName;
+        user.IsAdmin = item.IsAdmin;
+        user.HashedPassword = item.HashedPassword;
+        user.Email = item.Email;
+        user.SecretSantaFor = item.SecretSantaFor;
+        user.SecretSantaForId = item.SecretSantaForId;
+        user.Age = item.Age;
+
+        if(item.SecretSantaForId.HasValue)
+        {
+          var receiver = db.SecretSantas.FirstOrDefault(u => u.ReceiverUserId == item.SecretSantaForId);
+          receiver.SantaUserId = item.Id;
+        }
+        
         await db.SaveChangesAsync();
       }
     }
