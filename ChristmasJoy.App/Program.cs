@@ -1,7 +1,6 @@
-using System.IO;
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using System.IO;
 
 namespace ChristmasJoy.App
 {
@@ -12,18 +11,13 @@ namespace ChristmasJoy.App
           CreateWebHostBuilder(args).Build().Run();
         }
 
-    public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-        WebHost.CreateDefaultBuilder(args)
-            .UseKestrel()
-            .UseContentRoot(Directory.GetCurrentDirectory())
-            .ConfigureAppConfiguration((builderContext, config) =>
+    public static IHostBuilder CreateWebHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .ConfigureWebHostDefaults(webBuilder =>
             {
-              IHostingEnvironment env = builderContext.HostingEnvironment;
-
-              config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                    .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
-            })
-            .UseIISIntegration()
-            .UseStartup<Startup>();
-    }
+              webBuilder.UseContentRoot(Directory.GetCurrentDirectory());
+              webBuilder.UseIISIntegration();
+              webBuilder.UseStartup<Startup>();
+            });
+  }
 }

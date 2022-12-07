@@ -1,3 +1,4 @@
+
 using FluentValidation;
 
 namespace ChristmasJoy.App.ViewModels.Validations

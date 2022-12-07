@@ -61,7 +61,7 @@ namespace ChristmasJoy.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Page Title.
+        ///   Looks up a localized string similar to Page Title 2.
         /// </summary>
         internal static string page_title {
             get {
@@ -70,7 +70,7 @@ namespace ChristmasJoy.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to user.
+        ///   Looks up a localized string similar to User 2.
         /// </summary>
         internal static string user {
             get {
@@ -79,7 +79,7 @@ namespace ChristmasJoy.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hello.
+        ///   Looks up a localized string similar to Hello 2.
         /// </summary>
         internal static string welcomeMessage {
             get {

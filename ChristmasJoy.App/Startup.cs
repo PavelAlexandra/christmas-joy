@@ -10,19 +10,16 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Cors.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.IO;
 using System.Net;
 using System.Text;
 
 namespace ChristmasJoy.App
 {
-    public class Startup
+  public class Startup
     {
         public IConfiguration Configuration { get; }
 
@@ -97,25 +94,26 @@ namespace ChristmasJoy.App
             services.AddScoped<IUserService, UserService>();
       #endregion
 
-      #region EnableCord
-      services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
-            {
-              builder.AllowAnyOrigin()
-                     .AllowAnyMethod()
-                     .AllowAnyHeader();
-            }));
-            #endregion
+      #region EnableCors
+      services.AddCors(options =>
+      {
+        options.AddPolicy("MyPolicy",
+            builder => builder.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+      });
+      #endregion
 
-            services.AddMvc().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
+      services.AddMvc(options =>
+      {
+        options.Filters.Add(new ValidationFilter());
+      })
+        .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>());
             services.AddAutoMapper();
-            services.Configure<MvcOptions>(options =>
-            {
-              options.Filters.Add(new CorsAuthorizationFilterFactory("MyPolicy"));
-            });
       }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseExceptionHandler(
             builder =>
@@ -133,33 +131,19 @@ namespace ChristmasJoy.App
                           await context.Response.WriteAsync(error.Error.Message).ConfigureAwait(false);
                       }
                   });
-            });  
-            
-            app.UseAuthentication();
-
-            //Redirect any non-API calls to the Angular application
-            //so our application can handle the routing
-            app.Use(async (context, next) =>
-            {
-                await next();
-
-                if(context.Response.StatusCode == 404 && 
-                   !Path.HasExtension(context.Request.Path.Value) &&
-                   !context.Request.Path.Value.StartsWith("/api/"))
-                {
-                    context.Request.Path = "index.html";
-                    await next();
-                }
             });
-
-            //Configure the app to server the index.html file from /wwwroot when accessing the server from a web browser
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
+            app.UseRouting();  // first
+                               // Use the CORS policy
             app.UseCors("MyPolicy");
+            app.UseAuthentication();
+            app.UseAuthorization();
 
-            //Configure the app for usage as API with default route at '/api/[Controller]'
-            app.UseMvcWithDefaultRoute();               
-        }
+          //Configure the app for usage as API with default route at '/api/[Controller]'
+           app.UseEndpoints(endpoints =>
+            {
+              endpoints.MapControllers();
+            });
+    }
 
         private void ConfigureDatabaseRepositories(IAppConfiguration appConfig, IServiceCollection services)
         {
