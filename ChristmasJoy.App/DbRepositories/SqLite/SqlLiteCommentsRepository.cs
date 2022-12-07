@@ -34,8 +34,8 @@ namespace ChristmasJoy.App.DbRepositories.SqLite
       {
         var dbItem = _mapper.Map<Comment>(item);
         db.Comments.Add(dbItem);
-        var id = await db.SaveChangesAsync();
-        return id.ToString();
+        await db.SaveChangesAsync();
+        return dbItem.Id.ToString();
       } 
     }
 

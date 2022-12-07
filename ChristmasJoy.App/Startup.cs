@@ -135,6 +135,9 @@ namespace ChristmasJoy.App
             app.UseRouting();  // first
                                // Use the CORS policy
             app.UseCors("MyPolicy");
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
+
             app.UseAuthentication();
             app.UseAuthorization();
 

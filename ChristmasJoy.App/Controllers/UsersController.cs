@@ -123,7 +123,7 @@ namespace ChristmasJoy.App.Controllers
     {
       try
       {
-        var usersMap = new Dictionary<int, UserStatus>();
+        var usersMap = new Dictionary<string, UserStatus>();
   
         var users = _userRepo.GetAllNonAdminUsers();
         if (users != null)
@@ -131,9 +131,10 @@ namespace ChristmasJoy.App.Controllers
           foreach (var user in users)
           {
             var userStatus = await _statusService.GetUserStatusAsync(user.Id, user.UserName);
-            usersMap.Add(user.Id, userStatus);
+            usersMap.Add(user.Id.ToString(), userStatus);
           }
         }
+
         return Ok(new { data = usersMap });
       }
       catch (Exception ex)

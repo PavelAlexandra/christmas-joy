@@ -26,14 +26,14 @@ namespace ChristmasJoy.App.DbRepositories.SqLite
       dbContextFactory = contextFactory;
     }
 
-    public async Task<string> AddWishItemAsync(WishListItemViewModel item)
+    public async Task<int> AddWishItemAsync(WishListItemViewModel item)
     {
       var dbWishList = _mapper.Map<WishListItem>(item);
       using(var db = dbContextFactory.CreateDbContext(_appConfig))
       {
         db.WishListItems.Add(dbWishList);
-        var id = await db.SaveChangesAsync();
-        return id.ToString();
+        await db.SaveChangesAsync();
+        return dbWishList.Id;
       }
     }
 
@@ -41,7 +41,7 @@ namespace ChristmasJoy.App.DbRepositories.SqLite
     {
       using (var db = dbContextFactory.CreateDbContext(_appConfig))
       {
-        var dbItem = await db.WishListItems.FindAsync(item.Id);
+        var dbItem = db.WishListItems.Where(w => w.Id == item.Id).FirstOrDefault();
         if (dbItem == null)
         {
           throw new KeyNotFoundException($"Wish list item with id {item.Id} was not found.");
@@ -68,7 +68,7 @@ namespace ChristmasJoy.App.DbRepositories.SqLite
     {
       using (var db = dbContextFactory.CreateDbContext(_appConfig))
       {
-        var dbItem = await db.WishListItems.FindAsync(item.Id);
+        var dbItem = db.WishListItems.Where(w => w.Id == item.Id).FirstOrDefault();
         if (dbItem == null)
         {
           throw new KeyNotFoundException($"Wish list item with id {item.Id} was not found.");

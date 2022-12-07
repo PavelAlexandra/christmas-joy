@@ -1,5 +1,5 @@
 export class WishListItem{
-    id: string;
+    id: number;
     userId: number;
     item: string;
     isEdited: boolean = false;

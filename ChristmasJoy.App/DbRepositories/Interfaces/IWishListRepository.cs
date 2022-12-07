@@ -6,7 +6,7 @@ namespace ChristmasJoy.App.DbRepositories.Interfaces
 {
   public interface IWishListRepository
   {
-    Task<string> AddWishItemAsync(WishListItemViewModel item);
+    Task<int> AddWishItemAsync(WishListItemViewModel item);
     Task UpdateWishItemAsync(WishListItemViewModel item);
     Task DeleteWishItemAsync(WishListItemViewModel item);
     List<WishListItemViewModel> GetWishList(int userId);

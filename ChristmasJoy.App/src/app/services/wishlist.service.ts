@@ -26,7 +26,7 @@ export class WishlistService extends BaseService{
     }
 
     saveItem(item: WishListItem): Observable<any>{
-        if(item.id == '0'){
+        if(item.id == 0){
           return this.http.post(this.baseUrl + "/wishList/add/", item, this.requestOptions)
           .map(response => response.json())
           .catch(this.handleError);

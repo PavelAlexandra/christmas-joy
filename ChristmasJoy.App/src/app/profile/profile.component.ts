@@ -118,7 +118,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
   addToWishlist(){
     let newItem = new WishListItem();
-    newItem.id = "0";
+    newItem.id = 0;
     newItem.isEdited =  true;
     newItem.item = "";
     newItem.userId = this.userId;
